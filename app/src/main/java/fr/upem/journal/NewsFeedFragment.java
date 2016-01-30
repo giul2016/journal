@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView listView;
@@ -24,8 +26,11 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         listView.setAdapter(newsFeedAdapter);
         listView.setOnItemClickListener(this);
 
-        newsFeedAdapter.fill();
         return layout;
+    }
+
+    public void updateItems(List<Item> items) {
+        newsFeedAdapter.updateItems(items);
     }
 
     @Override

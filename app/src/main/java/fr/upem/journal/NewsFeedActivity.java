@@ -4,11 +4,11 @@ import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import java.util.List;
 
 import fr.upem.journal.tasks.FetchRSSFeedTask;
 
@@ -38,9 +38,8 @@ public class NewsFeedActivity extends AppCompatActivity {
                         (AsyncTask.Status.FINISHED)) {
                     fetchRSSFeedTask = new FetchRSSFeedTask() {
                         @Override
-                        protected void onPostExecute(String result) {
-                            Log.d("DEBUG", result);
-                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+                        protected void onPostExecute(List<Item> items) {
+                            newsFeedFragment.updateItems(items);
                         }
                     };
                     fetchRSSFeedTask.execute(urlEditText.getText().toString());

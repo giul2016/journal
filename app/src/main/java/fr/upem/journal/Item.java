@@ -23,4 +23,9 @@ public class Item {
     public String getLink() {
         return link;
     }
+
+    @Override
+    public String toString() {
+        return title + " " + " " + description + " " + link;
+    }
 }

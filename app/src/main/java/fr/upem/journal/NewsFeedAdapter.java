@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewsFeedAdapter extends BaseAdapter {
 
@@ -67,17 +68,8 @@ public class NewsFeedAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void fill() {
-        Item item1 = new Item("Japon : la 2DS arrive avec Pokémon]",
-                "",
-                "http://www.gamekult.com/actu/japon-la-2ds-arrive-avec-pokemon-A157563.html");
-
-        Item item2 = new Item("Deathsmiles annoncé sur Steam",
-                "",
-                "http://www.gamekult.com/video/deathsmiles-bande-annonce-steam-3050608443v.html");
-
-        items.add(item1);
-        items.add(item2);
+    public void updateItems(List<Item> items) {
+        this.items.addAll(items);
 
         notifyDataSetChanged();
     }
