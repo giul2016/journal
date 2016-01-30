@@ -1,20 +1,40 @@
 package fr.upem.journal;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.List;
-
 public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView listView;
     private NewsFeedAdapter newsFeedAdapter;
+
+    private String feed;
+
+    public static NewsFeedFragment newInstance(String feed) {
+        Bundle args = new Bundle();
+        args.putString("feed", feed);
+
+        NewsFeedFragment fragment = new NewsFeedFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+
+        if (args != null) {
+            feed = args.getString("feed");
+        }
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,11 +46,9 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         listView.setAdapter(newsFeedAdapter);
         listView.setOnItemClickListener(this);
 
-        return layout;
-    }
+        newsFeedAdapter.fetch(feed);
 
-    public void updateItems(List<Item> items) {
-        newsFeedAdapter.updateItems(items);
+        return layout;
     }
 
     @Override

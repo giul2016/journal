@@ -1,6 +1,7 @@
 package fr.upem.journal;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.upem.journal.tasks.FetchRSSFeedTask;
 
 public class NewsFeedAdapter extends BaseAdapter {
 
@@ -20,6 +23,7 @@ public class NewsFeedAdapter extends BaseAdapter {
 
     private final Context context;
     private final LayoutInflater layoutInflater;
+    private FetchRSSFeedTask fetchRSSFeedTask;
     private ArrayList<Item> items;
 
     public NewsFeedAdapter(Context context, LayoutInflater layoutInflater) {
@@ -69,9 +73,25 @@ public class NewsFeedAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void updateItems(List<Item> items) {
-        this.items.addAll(items);
+    public void fetch(String feed) {
+        if (fetchRSSFeedTask == null || fetchRSSFeedTask.isCancelled() || fetchRSSFeedTask.getStatus().equals
+                (AsyncTask.Status.FINISHED)) {
+            fetchRSSFeedTask = new FetchRSSFeedTask() {
+                @Override
+                protected void onPostExecute(List<Item> items) {
+                    updateItems(items);
+                }
+            };
+            fetchRSSFeedTask.execute(feed);
+        } else {
+            fetchRSSFeedTask.cancel(true);
+        }
+    }
 
+    public void updateItems(List<Item> items) {
+        if (items != null) {
+            this.items.addAll(items);
+        }
         notifyDataSetChanged();
     }
 }
