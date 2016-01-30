@@ -41,6 +41,7 @@ public class RSSParser {
         String title = null;
         String description = null;
         String link = null;
+        String pubDate = null;
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
 
@@ -55,6 +56,8 @@ public class RSSParser {
                         description = parser.nextText();
                     } else if (name.equals("link")) {
                         link = parser.nextText();
+                    } else if (name.equals("pubDate")) {
+                        pubDate = parser.nextText();
                     }
                 } catch (XmlPullParserException e) {
                     e.printStackTrace();
@@ -64,12 +67,13 @@ public class RSSParser {
 
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
-                    Item item = new Item(title, description, link);
+                    Item item = new Item(title, description, link, pubDate);
                     System.out.println(item);
                     items.add(item);
                     title = null;
                     description = null;
                     link = null;
+                    pubDate = null;
                 }
             }
 
