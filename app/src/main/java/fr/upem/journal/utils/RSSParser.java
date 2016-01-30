@@ -7,7 +7,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fr.upem.journal.Item;
@@ -67,9 +69,13 @@ public class RSSParser {
 
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
-                    Item item = new Item(title, description, link, pubDate);
-                    System.out.println(item);
-                    items.add(item);
+                    try {
+                        Item item = new Item(title, description, link, DateParser.parse(pubDate));
+                        items.add(item);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     title = null;
                     description = null;
                     link = null;

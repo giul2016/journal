@@ -9,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView listView;
     private NewsFeedAdapter newsFeedAdapter;
 
-    private String feed;
+    private ArrayList<String> feeds;
 
-    public static NewsFeedFragment newInstance(String feed) {
+    public static NewsFeedFragment newInstance(ArrayList<String> feeds) {
         Bundle args = new Bundle();
-        args.putString("feed", feed);
+        args.putStringArrayList("feeds", feeds);
 
         NewsFeedFragment fragment = new NewsFeedFragment();
         fragment.setArguments(args);
@@ -31,7 +33,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         Bundle args = getArguments();
 
         if (args != null) {
-            feed = args.getString("feed");
+            feeds = args.getStringArrayList("feeds");
         }
 
     }
@@ -46,7 +48,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         listView.setAdapter(newsFeedAdapter);
         listView.setOnItemClickListener(this);
 
-        newsFeedAdapter.fetch(feed);
+        newsFeedAdapter.fetch(feeds);
 
         return layout;
     }

@@ -1,7 +1,6 @@
 package fr.upem.journal;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import fr.upem.journal.tasks.FetchRSSFeedTask;
@@ -23,8 +24,8 @@ public class NewsFeedAdapter extends BaseAdapter {
 
     private final Context context;
     private final LayoutInflater layoutInflater;
-    private FetchRSSFeedTask fetchRSSFeedTask;
     private ArrayList<Item> items;
+    private final Object monitor = new Object();
 
     public NewsFeedAdapter(Context context, LayoutInflater layoutInflater) {
         this.context = context;
@@ -68,29 +69,46 @@ public class NewsFeedAdapter extends BaseAdapter {
 
         holder.titleTextView.setText(item.getTitle());
         holder.descriptionTextView.setText(item.getDescription());
-        holder.pubDateTextView.setText(item.getPubDate());
+        holder.pubDateTextView.setText(item.getPubDate().toString());
 
         return convertView;
     }
 
-    public void fetch(String feed) {
-        if (fetchRSSFeedTask == null || fetchRSSFeedTask.isCancelled() || fetchRSSFeedTask.getStatus().equals
-                (AsyncTask.Status.FINISHED)) {
-            fetchRSSFeedTask = new FetchRSSFeedTask() {
+    public void fetch(ArrayList<String> feeds) {
+        for (String feed : feeds) {
+            new FetchRSSFeedTask() {
                 @Override
                 protected void onPostExecute(List<Item> items) {
                     updateItems(items);
                 }
-            };
-            fetchRSSFeedTask.execute(feed);
-        } else {
-            fetchRSSFeedTask.cancel(true);
+            }.execute(feed);
         }
+    }
+
+    private void sortDescending() {
+        Collections.sort(this.items, new Comparator<Item>() {
+            @Override
+            public int compare(Item lhs, Item rhs) {
+                return -lhs.getPubDate().compareTo(rhs.getPubDate());
+            }
+        });
+    }
+
+    private void sortAscending() {
+        Collections.sort(this.items, new Comparator<Item>() {
+            @Override
+            public int compare(Item lhs, Item rhs) {
+                return lhs.getPubDate().compareTo(rhs.getPubDate());
+            }
+        });
     }
 
     public void updateItems(List<Item> items) {
         if (items != null) {
-            this.items.addAll(items);
+            synchronized (monitor) {
+                this.items.addAll(items);
+                sortDescending();
+            }
         }
         notifyDataSetChanged();
     }

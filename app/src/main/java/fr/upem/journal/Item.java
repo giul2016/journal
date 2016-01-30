@@ -1,13 +1,15 @@
 package fr.upem.journal;
 
+import java.util.Date;
+
 public class Item {
 
     private final String title;
     private final String description;
     private final String link;
-    private final String pubDate;
+    private final Date pubDate;
 
-    public Item(String title, String description, String link, String pubDate) {
+    public Item(String title, String description, String link, Date pubDate) {
         this.title = title;
         this.description = description;
         this.link = link;
@@ -26,7 +28,7 @@ public class Item {
         return link;
     }
 
-    public String getPubDate() {
+    public Date getPubDate() {
         return pubDate;
     }
 
