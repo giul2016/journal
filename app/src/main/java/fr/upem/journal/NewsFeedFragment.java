@@ -3,6 +3,7 @@ package fr.upem.journal;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import fr.upem.journal.tasks.FetchRSSFeedTask;
 
 public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private NewsFeedAdapter newsFeedAdapter;
 
@@ -40,15 +45,23 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View layout = inflater.inflate(R.layout.fragment_news, container, false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
         listView = (ListView) layout.findViewById(R.id.listView);
         newsFeedAdapter = new NewsFeedAdapter(layout.getContext(), inflater);
+
         listView.setAdapter(newsFeedAdapter);
         listView.setOnItemClickListener(this);
 
-        newsFeedAdapter.fetch(feeds);
+        fetch();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetch();
+            }
+        });
 
         return layout;
     }
@@ -63,6 +76,18 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         intent.putExtra("link", link);
 
         startActivity(intent);
+    }
+
+    private void fetch() {
+        for (String feed : feeds) {
+            new FetchRSSFeedTask() {
+                @Override
+                protected void onPostExecute(List<Item> items) {
+                    newsFeedAdapter.updateItems(items);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }.execute(feed);
+        }
     }
 
 }

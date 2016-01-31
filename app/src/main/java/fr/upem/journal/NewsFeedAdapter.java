@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import fr.upem.journal.tasks.FetchRSSFeedTask;
-
 public class NewsFeedAdapter extends BaseAdapter {
 
     private static class ViewHolder {
@@ -72,17 +70,6 @@ public class NewsFeedAdapter extends BaseAdapter {
         holder.pubDateTextView.setText(item.getPubDate().toString());
 
         return convertView;
-    }
-
-    public void fetch(ArrayList<String> feeds) {
-        for (String feed : feeds) {
-            new FetchRSSFeedTask() {
-                @Override
-                protected void onPostExecute(List<Item> items) {
-                    updateItems(items);
-                }
-            }.execute(feed);
-        }
     }
 
     private void sortDescending() {
