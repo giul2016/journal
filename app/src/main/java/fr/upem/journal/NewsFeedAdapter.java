@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 public class NewsFeedAdapter extends BaseAdapter {
@@ -22,23 +23,25 @@ public class NewsFeedAdapter extends BaseAdapter {
 
     private final Context context;
     private final LayoutInflater layoutInflater;
-    private ArrayList<Item> items;
+    private HashSet<Item> items;
+    private ArrayList<Item> itemList;
     private final Object monitor = new Object();
 
     public NewsFeedAdapter(Context context, LayoutInflater layoutInflater) {
         this.context = context;
         this.layoutInflater = layoutInflater;
-        this.items = new ArrayList<>();
+        this.items = new HashSet<>();
+        this.itemList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return itemList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return items.get(position);
+        return itemList.get(position);
     }
 
     @Override
@@ -72,8 +75,8 @@ public class NewsFeedAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void sortDescending() {
-        Collections.sort(this.items, new Comparator<Item>() {
+    private void sortDescending(ArrayList<Item> itemList) {
+        Collections.sort(itemList, new Comparator<Item>() {
             @Override
             public int compare(Item lhs, Item rhs) {
                 return -lhs.getPubDate().compareTo(rhs.getPubDate());
@@ -81,8 +84,8 @@ public class NewsFeedAdapter extends BaseAdapter {
         });
     }
 
-    private void sortAscending() {
-        Collections.sort(this.items, new Comparator<Item>() {
+    private void sortAscending(ArrayList<Item> itemList) {
+        Collections.sort(itemList, new Comparator<Item>() {
             @Override
             public int compare(Item lhs, Item rhs) {
                 return lhs.getPubDate().compareTo(rhs.getPubDate());
@@ -93,10 +96,13 @@ public class NewsFeedAdapter extends BaseAdapter {
     public void updateItems(List<Item> items) {
         if (items != null) {
             synchronized (monitor) {
-                this.items.addAll(items);
-                sortDescending();
+                if (this.items.addAll(items)) {
+                    ArrayList<Item> updatedItemList = new ArrayList<>(items);
+                    sortDescending(updatedItemList);
+                    itemList = updatedItemList;
+                    notifyDataSetChanged();
+                }
             }
         }
-        notifyDataSetChanged();
     }
 }
