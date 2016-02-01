@@ -79,15 +79,13 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     private void fetch() {
-        for (String feed : feeds) {
-            new FetchRSSFeedTask() {
-                @Override
-                protected void onPostExecute(List<Item> items) {
-                    newsFeedAdapter.updateItems(items);
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }.execute(feed);
-        }
+        new FetchRSSFeedTask() {
+            @Override
+            protected void onPostExecute(List<Item> items) {
+                newsFeedAdapter.updateItems(items);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }.execute(feeds.toArray(new String[feeds.size()]));
     }
 
 }

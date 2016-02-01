@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.upem.journal.Item;
@@ -19,12 +20,15 @@ public class FetchRSSFeedTask extends AsyncTask<String, Integer, List<Item>> {
 
     @Override
     protected List<Item> doInBackground(String... urlStrings) {
-        try {
-            return download(urlStrings[0]);
-        } catch (IOException e) {
-            Log.e("DOWNLOAD", "Error while fetching rss feed data");
+        List<Item> items = new ArrayList<>();
+        for(String urlString : urlStrings) {
+            try {
+                items.addAll(download(urlString));
+            } catch (IOException e) {
+                Log.e("DOWNLOAD", "Error while fetching rss feed data");
+            }
         }
-        return null;
+        return items;
     }
 
     private List<Item> download(String urlString) throws IOException {
