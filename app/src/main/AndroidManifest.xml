@@ -23,6 +23,14 @@
         </activity>
         <activity android:name=".WebActivity">
         </activity>
+        <activity
+            android:name=".FacebookActivity"
+            android:label="@string/facebook">
+        </activity>
+        <activity
+            android:name=".TwitterActivity"
+            android:label="@string/twitter">
+        </activity>
     </application>
 
 </manifest>
