@@ -7,6 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +22,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private final String[] drawerItems = {"News", "Facebook", "Twitter"};
+    private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -50,15 +53,34 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (position == 1) {
                     Intent intent = new Intent(NewsFeedActivity.this, FacebookActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
                 } else if (position == 2) {
                     Intent intent = new Intent(NewsFeedActivity.this, TwitterActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                } else if (position == 3) {
+                    Intent intent = new Intent(NewsFeedActivity.this, SettingsActivity.class);
                     startActivity(intent);
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionSettings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private ArrayList<NewsCategory> initialData() {
