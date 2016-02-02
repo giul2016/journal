@@ -10,18 +10,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.upem.journal.Item;
+import fr.upem.journal.NewsFeedItem;
 import fr.upem.journal.NewsFeed;
 import fr.upem.journal.utils.RSSParser;
 
-public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<Item>> {
+public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<NewsFeedItem>> {
 
     public FetchRSSFeedTask() {
     }
 
     @Override
-    protected List<Item> doInBackground(NewsFeed... newsFeeds) {
-        List<Item> items = new ArrayList<>();
+    protected List<NewsFeedItem> doInBackground(NewsFeed... newsFeeds) {
+        List<NewsFeedItem> items = new ArrayList<>();
         for (NewsFeed newsFeed : newsFeeds) {
             try {
                 items.addAll(download(newsFeed));
@@ -32,7 +32,7 @@ public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<Item>> {
         return items;
     }
 
-    private List<Item> download(NewsFeed newsFeed) throws IOException {
+    private List<NewsFeedItem> download(NewsFeed newsFeed) throws IOException {
         InputStream inputStream = null;
         try {
             URL url = new URL(newsFeed.getLink());

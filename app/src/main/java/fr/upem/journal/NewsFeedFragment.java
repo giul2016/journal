@@ -67,7 +67,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Item item = (Item) newsFeedAdapter.getItem(position);
+        NewsFeedItem item = (NewsFeedItem) newsFeedAdapter.getItem(position);
 
         String link = item.getLink();
 
@@ -80,7 +80,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
     private void fetch() {
         new FetchRSSFeedTask() {
             @Override
-            protected void onPostExecute(List<Item> items) {
+            protected void onPostExecute(List<NewsFeedItem> items) {
                 newsFeedAdapter.updateItems(items);
                 swipeRefreshLayout.setRefreshing(false);
             }

@@ -2,7 +2,7 @@ package fr.upem.journal;
 
 import java.util.Date;
 
-public class Item {
+public class NewsFeedItem {
 
     private final String title;
     private final String description;
@@ -10,7 +10,7 @@ public class Item {
     private final Date pubDate;
     private final String source;
 
-    public Item(String title, String description, String link, Date pubDate, String source) {
+    public NewsFeedItem(String title, String description, String link, Date pubDate, String source) {
         this.title = title;
         this.description = description;
         this.link = link;
@@ -45,14 +45,13 @@ public class Item {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Item)) {
+        if (!(o instanceof NewsFeedItem)) {
             return false;
         }
 
-        Item item = (Item) o;
+        NewsFeedItem item = (NewsFeedItem) o;
         return title.equals(item.title) && description.equals(item.description) && link.equals(item.link) && pubDate
-                .equals
-                        (item.pubDate) & source.equals(item.source);
+                .equals(item.pubDate) & source.equals(item.source);
     }
 
     @Override

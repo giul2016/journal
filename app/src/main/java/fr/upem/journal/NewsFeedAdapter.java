@@ -23,8 +23,8 @@ public class NewsFeedAdapter extends BaseAdapter {
 
     private final Context context;
     private final LayoutInflater layoutInflater;
-    private HashSet<Item> items;
-    private ArrayList<Item> itemList;
+    private HashSet<NewsFeedItem> items;
+    private ArrayList<NewsFeedItem> itemList;
     private final Object monitor = new Object();
 
     public NewsFeedAdapter(Context context, LayoutInflater layoutInflater) {
@@ -66,7 +66,7 @@ public class NewsFeedAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Item item = (Item) getItem(position);
+        NewsFeedItem item = (NewsFeedItem) getItem(position);
 
         holder.titleTextView.setText(item.getTitle());
         holder.descriptionTextView.setText(item.getDescription());
@@ -75,29 +75,29 @@ public class NewsFeedAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void sortDescending(ArrayList<Item> itemList) {
-        Collections.sort(itemList, new Comparator<Item>() {
+    private void sortDescending(ArrayList<NewsFeedItem> itemList) {
+        Collections.sort(itemList, new Comparator<NewsFeedItem>() {
             @Override
-            public int compare(Item lhs, Item rhs) {
+            public int compare(NewsFeedItem lhs, NewsFeedItem rhs) {
                 return -lhs.getPubDate().compareTo(rhs.getPubDate());
             }
         });
     }
 
-    private void sortAscending(ArrayList<Item> itemList) {
-        Collections.sort(itemList, new Comparator<Item>() {
+    private void sortAscending(ArrayList<NewsFeedItem> itemList) {
+        Collections.sort(itemList, new Comparator<NewsFeedItem>() {
             @Override
-            public int compare(Item lhs, Item rhs) {
+            public int compare(NewsFeedItem lhs, NewsFeedItem rhs) {
                 return lhs.getPubDate().compareTo(rhs.getPubDate());
             }
         });
     }
 
-    public void updateItems(List<Item> items) {
+    public void updateItems(List<NewsFeedItem> items) {
         if (items != null) {
             synchronized (monitor) {
                 if (this.items.addAll(items)) {
-                    ArrayList<Item> updatedItemList = new ArrayList<>(items);
+                    ArrayList<NewsFeedItem> updatedItemList = new ArrayList<>(items);
                     sortDescending(updatedItemList);
                     itemList = updatedItemList;
                     notifyDataSetChanged();
