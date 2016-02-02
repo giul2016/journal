@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class NewsCategory {
 
     private String title;
-    private final ArrayList<String> feeds;
+    private final ArrayList<NewsFeed> feeds;
 
     public NewsCategory(String title) {
         this.title = title;
@@ -16,11 +16,11 @@ public class NewsCategory {
         return title;
     }
 
-    public ArrayList<String> getFeeds() {
+    public ArrayList<NewsFeed> getFeeds() {
         return feeds;
     }
 
-    public void addFeed(String feed) {
+    public void addFeed(NewsFeed feed) {
         feeds.add(feed);
     }
 }

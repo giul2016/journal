@@ -18,7 +18,7 @@ public class NewsFeedAdapter extends BaseAdapter {
     private static class ViewHolder {
         private TextView titleTextView;
         private TextView descriptionTextView;
-        private TextView pubDateTextView;
+        private TextView infosTextView;
     }
 
     private final Context context;
@@ -59,7 +59,7 @@ public class NewsFeedAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.titleTextView = (TextView) convertView.findViewById(R.id.itemTitle);
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.itemDescription);
-            holder.pubDateTextView = (TextView) convertView.findViewById(R.id.itemPubDate);
+            holder.infosTextView = (TextView) convertView.findViewById(R.id.itemInfos);
 
             convertView.setTag(holder);
         } else {
@@ -70,7 +70,7 @@ public class NewsFeedAdapter extends BaseAdapter {
 
         holder.titleTextView.setText(item.getTitle());
         holder.descriptionTextView.setText(item.getDescription());
-        holder.pubDateTextView.setText(item.getPubDate().toString());
+        holder.infosTextView.setText(item.getSource() + " / " + item.getPubDate().toString());
 
         return convertView;
     }

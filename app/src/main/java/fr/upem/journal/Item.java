@@ -8,12 +8,14 @@ public class Item {
     private final String description;
     private final String link;
     private final Date pubDate;
+    private final String source;
 
-    public Item(String title, String description, String link, Date pubDate) {
+    public Item(String title, String description, String link, Date pubDate, String source) {
         this.title = title;
         this.description = description;
         this.link = link;
         this.pubDate = pubDate;
+        this.source = source;
     }
 
     public String getTitle() {
@@ -32,9 +34,13 @@ public class Item {
         return pubDate;
     }
 
+    public String getSource() {
+        return source;
+    }
+
     @Override
     public String toString() {
-        return title + " " + " " + description + " " + link + " " + pubDate;
+        return title + " " + " " + description + " " + link + " " + pubDate + " " + source;
     }
 
     @Override
@@ -44,8 +50,9 @@ public class Item {
         }
 
         Item item = (Item) o;
-        return title.equals(item.title) && description.equals(item.description) && link.equals(item.link) && pubDate.equals
-                (item.pubDate);
+        return title.equals(item.title) && description.equals(item.description) && link.equals(item.link) && pubDate
+                .equals
+                        (item.pubDate) & source.equals(item.source);
     }
 
     @Override
@@ -54,6 +61,7 @@ public class Item {
         result = 31 * result + description.hashCode();
         result = 31 * result + link.hashCode();
         result = 31 * result + pubDate.hashCode();
+        result = 31 * result + source.hashCode();
         return result;
     }
 }

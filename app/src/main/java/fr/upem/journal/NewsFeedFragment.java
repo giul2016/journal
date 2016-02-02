@@ -20,12 +20,11 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private NewsFeedAdapter newsFeedAdapter;
+    private ArrayList<NewsFeed> feeds;
 
-    private ArrayList<String> feeds;
-
-    public static NewsFeedFragment newInstance(ArrayList<String> feeds) {
+    public static NewsFeedFragment newInstance(ArrayList<NewsFeed> feeds) {
         Bundle args = new Bundle();
-        args.putStringArrayList("feeds", feeds);
+        args.putParcelableArrayList("feeds", feeds);
 
         NewsFeedFragment fragment = new NewsFeedFragment();
         fragment.setArguments(args);
@@ -38,7 +37,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
         Bundle args = getArguments();
 
         if (args != null) {
-            feeds = args.getStringArrayList("feeds");
+            feeds = args.getParcelableArrayList("feeds");
         }
 
     }
@@ -85,7 +84,7 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
                 newsFeedAdapter.updateItems(items);
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }.execute(feeds.toArray(new String[feeds.size()]));
+        }.execute(feeds.toArray(new NewsFeed[feeds.size()]));
     }
 
 }

@@ -11,19 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.upem.journal.Item;
+import fr.upem.journal.NewsFeed;
 import fr.upem.journal.utils.RSSParser;
 
-public class FetchRSSFeedTask extends AsyncTask<String, Integer, List<Item>> {
+public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<Item>> {
 
     public FetchRSSFeedTask() {
     }
 
     @Override
-    protected List<Item> doInBackground(String... urlStrings) {
+    protected List<Item> doInBackground(NewsFeed... newsFeeds) {
         List<Item> items = new ArrayList<>();
-        for(String urlString : urlStrings) {
+        for (NewsFeed newsFeed : newsFeeds) {
             try {
-                items.addAll(download(urlString));
+                items.addAll(download(newsFeed));
             } catch (IOException e) {
                 Log.e("DOWNLOAD", "Error while fetching rss feed data");
             }
@@ -31,10 +32,10 @@ public class FetchRSSFeedTask extends AsyncTask<String, Integer, List<Item>> {
         return items;
     }
 
-    private List<Item> download(String urlString) throws IOException {
+    private List<Item> download(NewsFeed newsFeed) throws IOException {
         InputStream inputStream = null;
         try {
-            URL url = new URL(urlString);
+            URL url = new URL(newsFeed.getLink());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(60000);
             connection.setConnectTimeout(60000);
@@ -48,7 +49,7 @@ public class FetchRSSFeedTask extends AsyncTask<String, Integer, List<Item>> {
 
             //connection.disconnect();
 
-            return RSSParser.parse(inputStream);
+            return RSSParser.parse(inputStream, newsFeed.getLabel());
         } finally {
             if (inputStream != null) {
                 inputStream.close();

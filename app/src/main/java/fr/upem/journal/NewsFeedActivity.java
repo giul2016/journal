@@ -60,26 +60,27 @@ public class NewsFeedActivity extends AppCompatActivity {
         ArrayList<NewsCategory> categories = new ArrayList<>();
 
         NewsCategory general = new NewsCategory("General");
-        general.addFeed("http://www.lemonde.fr/m-actu/rss_full.xml");
+        general.addFeed(new NewsFeed("Le Monde", "http://www.lemonde.fr/m-actu/rss_full.xml"));
 
         NewsCategory international = new NewsCategory("International");
-        international.addFeed("http://www.lemonde.fr/japon/rss_full.xml");
-        international.addFeed("http://www.lemonde.fr/europe/rss_full.xml");
-        international.addFeed("http://www.lemonde.fr/ameriques/rss_full.xml");
-        international.addFeed("http://www.lemonde.fr/asie-pacifique/rss_full.xml");
+        international.addFeed(new NewsFeed("Le Monde - Japon", "http://www.lemonde.fr/japon/rss_full.xml"));
+        international.addFeed(new NewsFeed("Le Monde - Europe", "http://www.lemonde.fr/europe/rss_full.xml"));
+        international.addFeed(new NewsFeed("Le Monde - Amériques", "http://www.lemonde.fr/ameriques/rss_full.xml"));
+        international.addFeed(new NewsFeed("Le Monde - Asie-Pacifique", "http://www.lemonde" +
+                ".fr/asie-pacifique/rss_full.xml"));
 
         NewsCategory sport = new NewsCategory("Sport");
-        sport.addFeed("http://www.lemonde.fr/sport/rss_full.xml");
+        sport.addFeed(new NewsFeed("Le Monde - Sport", "http://www.lemonde.fr/sport/rss_full.xml"));
 
         NewsCategory technology = new NewsCategory("Technology");
-        technology.addFeed("http://www.lemonde.fr/technologies/rss_full.xml");
+        technology.addFeed(new NewsFeed("Le Monde - Technologies", "http://www.lemonde.fr/technologies/rss_full.xml"));
 
         NewsCategory gaming = new NewsCategory("Gaming");
-        gaming.addFeed("http://www.gamekult.com/feeds/actu.html");
-        gaming.addFeed("http://www.lemonde.fr/jeux-video/rss_full.xml");
+        gaming.addFeed(new NewsFeed("Gamekult", "http://www.gamekult.com/feeds/actu.html"));
+        gaming.addFeed(new NewsFeed("Le Monde - Jeux Vidéo", "http://www.lemonde.fr/jeux-video/rss_full.xml"));
 
         NewsCategory culture = new NewsCategory("Culture");
-        culture.addFeed("http://www.lemonde.fr/culture/rss_full.xml");
+        culture.addFeed(new NewsFeed("Le Monde - Culture", "http://www.lemonde.fr/culture/rss_full.xml"));
 
         categories.add(general);
         categories.add(international);
