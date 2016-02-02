@@ -69,10 +69,8 @@ public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         NewsFeedItem item = (NewsFeedItem) newsFeedAdapter.getItem(position);
 
-        String link = item.getLink();
-
-        Intent intent = new Intent(getActivity(), WebActivity.class);
-        intent.putExtra("link", link);
+        Intent intent = new Intent(getActivity(), NewsContentActivity.class);
+        intent.putExtra("item", item);
 
         startActivity(intent);
     }

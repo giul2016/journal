@@ -1,8 +1,11 @@
 package fr.upem.journal;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
-public class NewsFeedItem {
+public class NewsFeedItem implements Parcelable {
 
     private final String title;
     private final String description;
@@ -62,5 +65,36 @@ public class NewsFeedItem {
         result = 31 * result + pubDate.hashCode();
         result = 31 * result + source.hashCode();
         return result;
+    }
+
+    public static final Creator<NewsFeedItem> CREATOR = new Creator<NewsFeedItem>() {
+        @Override
+        public NewsFeedItem createFromParcel(Parcel in) {
+            String title = in.readString();
+            String description = in.readString();
+            String link = in.readString();
+            Date pubDate = (Date) in.readSerializable();
+            String source = in.readString();
+            return new NewsFeedItem(title, description, link, pubDate, source);
+        }
+
+        @Override
+        public NewsFeedItem[] newArray(int size) {
+            return new NewsFeedItem[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(link);
+        dest.writeSerializable(pubDate);
+        dest.writeString(source);
     }
 }

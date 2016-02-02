@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="fr.upem.journal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="fr.upem.journal"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -32,6 +31,8 @@
             android:label="@string/twitter">
         </activity>
         <activity android:name=".SettingsActivity">
+        </activity>
+        <activity android:name=".NewsContentActivity">
         </activity>
     </application>
 
