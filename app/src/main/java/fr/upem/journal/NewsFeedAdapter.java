@@ -1,6 +1,7 @@
 package fr.upem.journal;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class NewsFeedAdapter extends BaseAdapter {
         NewsFeedItem item = (NewsFeedItem) getItem(position);
 
         holder.titleTextView.setText(item.getTitle());
-        holder.descriptionTextView.setText(item.getDescription());
+        holder.descriptionTextView.setText(Html.fromHtml(item.getDescription().replaceAll("<img.+/(img)*>", "")));
         holder.infosTextView.setText(item.getSource() + " / " + item.getPubDate().toString());
 
         return convertView;
