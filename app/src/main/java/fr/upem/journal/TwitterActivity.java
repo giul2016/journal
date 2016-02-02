@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 
 public class TwitterActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter"};
@@ -19,6 +21,9 @@ public class TwitterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         drawerList = (ListView) findViewById(R.id.leftDrawer);
