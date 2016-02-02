@@ -7,4 +7,6 @@
     <string name="prefCatNotifications">Notifications</string>
     <string name="prefNotificationsTitle">Activate notifications</string>
     <string name="actionSettings">Settings</string>
+    <string name="drawerOpen">Drawer Open</string>
+    <string name="drawerClose">Drawer Close</string>
 </resources>
