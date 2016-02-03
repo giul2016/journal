@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="fr.upem.journal"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="fr.upem.journal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -16,7 +17,6 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -32,7 +32,12 @@
         </activity>
         <activity android:name=".SettingsActivity">
         </activity>
-        <activity android:name=".NewsContentActivity">
+        <activity
+            android:name=".NewsContentActivity"
+            android:parentActivityName=".NewsFeedActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NewsFeedActivity"/>
         </activity>
     </application>
 

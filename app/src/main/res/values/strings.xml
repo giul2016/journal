@@ -9,4 +9,5 @@
     <string name="actionSettings">Settings</string>
     <string name="drawerOpen">Drawer Open</string>
     <string name="drawerClose">Drawer Close</string>
+    <string name="explore">Explore</string>
 </resources>
