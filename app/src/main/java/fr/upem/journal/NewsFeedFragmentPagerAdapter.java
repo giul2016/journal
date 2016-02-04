@@ -19,6 +19,11 @@ public class NewsFeedFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
     public Fragment getItem(int position) {
         return NewsFeedFragment.newInstance(categories.get(position).getFeeds());
     }

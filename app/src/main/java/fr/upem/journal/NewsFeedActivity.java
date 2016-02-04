@@ -1,6 +1,7 @@
 package fr.upem.journal;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,6 +19,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import fr.upem.journal.database.DatabaseHelper;
 
 public class NewsFeedActivity extends AppCompatActivity {
 
@@ -35,6 +39,11 @@ public class NewsFeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+
+        if (isFirstTime()) {
+            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+            databaseHelper.initialData();
+        }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -59,7 +68,8 @@ public class NewsFeedActivity extends AppCompatActivity {
         drawerList = (ListView) findViewById(R.id.leftDrawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
 
-        adapter = new NewsFeedFragmentPagerAdapter(getSupportFragmentManager(), NewsFeedActivity.this, initialData());
+        adapter = new NewsFeedFragmentPagerAdapter(getSupportFragmentManager(), NewsFeedActivity.this,
+                loadDataFromDatabase());
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -121,39 +131,32 @@ public class NewsFeedActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<NewsCategory> initialData() {
-        ArrayList<NewsCategory> categories = new ArrayList<>();
+    private ArrayList<NewsCategory> loadDataFromDatabase() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
 
-        NewsCategory general = new NewsCategory("General");
-        general.addFeed(new NewsFeed("Le Monde", "http://www.lemonde.fr/m-actu/rss_full.xml"));
+        Map<String, ArrayList<NewsFeed>> newsFeeds = databaseHelper.selectAllNewsFeeds();
+        ArrayList<NewsCategory> newsCategories = new ArrayList<>();
 
-        NewsCategory international = new NewsCategory("International");
-        international.addFeed(new NewsFeed("Le Monde - Japon", "http://www.lemonde.fr/japon/rss_full.xml"));
-        international.addFeed(new NewsFeed("Le Monde - Europe", "http://www.lemonde.fr/europe/rss_full.xml"));
-        international.addFeed(new NewsFeed("Le Monde - Amériques", "http://www.lemonde.fr/ameriques/rss_full.xml"));
-        international.addFeed(new NewsFeed("Le Monde - Asie-Pacifique", "http://www.lemonde" +
-                ".fr/asie-pacifique/rss_full.xml"));
+        for (String category : newsFeeds.keySet()) {
+            NewsCategory newsCategory = new NewsCategory(category);
+            ArrayList<NewsFeed> newsFeedsList = newsFeeds.get(category);
+            for (NewsFeed newsFeed : newsFeedsList) {
+                newsCategory.addFeed(newsFeed);
+            }
+            newsCategories.add(newsCategory);
+        }
 
-        NewsCategory sport = new NewsCategory("Sport");
-        sport.addFeed(new NewsFeed("Le Monde - Sport", "http://www.lemonde.fr/sport/rss_full.xml"));
-
-        NewsCategory technology = new NewsCategory("Technology");
-        technology.addFeed(new NewsFeed("Le Monde - Technologies", "http://www.lemonde.fr/technologies/rss_full.xml"));
-
-        NewsCategory gaming = new NewsCategory("Gaming");
-        gaming.addFeed(new NewsFeed("Gamekult", "http://www.gamekult.com/feeds/actu.html"));
-        gaming.addFeed(new NewsFeed("Le Monde - Jeux Vidéo", "http://www.lemonde.fr/jeux-video/rss_full.xml"));
-
-        NewsCategory culture = new NewsCategory("Culture");
-        culture.addFeed(new NewsFeed("Le Monde - Culture", "http://www.lemonde.fr/culture/rss_full.xml"));
-
-        categories.add(general);
-        categories.add(international);
-        categories.add(sport);
-        categories.add(technology);
-        categories.add(gaming);
-        categories.add(culture);
-
-        return categories;
+        return newsCategories;
     }
+
+    private boolean isFirstTime() {
+        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
+        if (preferences.getBoolean("first_time", true)) {
+            preferences.edit().putBoolean("first_time", false).apply();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
