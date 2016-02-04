@@ -22,15 +22,12 @@ public class RSSParser {
     public static List<NewsFeedItem> parse(InputStream rssInputStream, String source) {
         ArrayList<NewsFeedItem> items = new ArrayList<>();
 
-        System.out.println("hello");
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(rssInputStream, UTF8);
         } catch (XmlPullParserException e) {
             return items;
         }
-
-        System.out.println("yeah");
 
         int eventType;
         try {
@@ -49,7 +46,6 @@ public class RSSParser {
             if (eventType == XmlPullParser.START_TAG) {
                 String name = parser.getName();
 
-                System.out.println(name);
                 try {
                     if (name.equals("title")) {
                         title = parser.nextText();
@@ -69,7 +65,8 @@ public class RSSParser {
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
                     try {
-                        NewsFeedItem item = new NewsFeedItem(title, description, link, DateParser.parse(pubDate), source);
+                        NewsFeedItem item = new NewsFeedItem(title, description, link, DateParser.parse(pubDate),
+                                source);
                         items.add(item);
                     } catch (ParseException e) {
                         e.printStackTrace();
