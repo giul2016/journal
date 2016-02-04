@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import fr.upem.journal.database.DatabaseHelper;
 
@@ -134,19 +133,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     private ArrayList<NewsCategory> loadDataFromDatabase() {
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
 
-        Map<String, ArrayList<NewsFeed>> newsFeeds = databaseHelper.selectAllNewsFeeds();
-        ArrayList<NewsCategory> newsCategories = new ArrayList<>();
-
-        for (String category : newsFeeds.keySet()) {
-            NewsCategory newsCategory = new NewsCategory(category);
-            ArrayList<NewsFeed> newsFeedsList = newsFeeds.get(category);
-            for (NewsFeed newsFeed : newsFeedsList) {
-                newsCategory.addFeed(newsFeed);
-            }
-            newsCategories.add(newsCategory);
-        }
-
-        return newsCategories;
+        return databaseHelper.selectNewsCategories();
     }
 
     private boolean isFirstTime() {
