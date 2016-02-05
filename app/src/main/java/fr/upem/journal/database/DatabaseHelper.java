@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 String title = cursor.getString(cursor.getColumnIndex(DatabaseContract.NewsCategory.COLUMN_NAME_TITLE));
                 NewsCategory newsCategory = new NewsCategory(title);
-                ArrayList<NewsFeed> newsFeeds = selectNewsFeedsByCategory(newsCategory);
+                ArrayList<NewsFeed> newsFeeds = selectNewsFeedsByCategory(newsCategory.getTitle());
                 for (NewsFeed newsFeed : newsFeeds) {
                     newsCategory.addFeed(newsFeed);
                 }
@@ -78,9 +78,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newsCategories;
     }
 
-    private ArrayList<NewsFeed> selectNewsFeedsByCategory(NewsCategory newsCategory) {
+    public ArrayList<NewsFeed> selectNewsFeedsByCategory(String categoryTitle) {
         String query = "SELECT * FROM " + DatabaseContract.NewsFeed.TABLE_NAME + " WHERE " + DatabaseContract
-                .NewsFeed.COLUMN_NAME_CATEGORY + " = \"" + newsCategory.getTitle() + "\"";
+                .NewsFeed.COLUMN_NAME_CATEGORY + " = \"" + categoryTitle + "\"";
 
         ArrayList<NewsFeed> newsFeeds = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();

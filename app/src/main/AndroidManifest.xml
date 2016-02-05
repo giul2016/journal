@@ -41,6 +41,8 @@
         </activity>
         <activity android:name=".activity.EditCategoriesActivity">
         </activity>
+        <activity android:name=".activity.EditNewsFeedsActivity">
+        </activity>
     </application>
 
 </manifest>

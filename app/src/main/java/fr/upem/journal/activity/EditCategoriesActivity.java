@@ -1,20 +1,23 @@
 package fr.upem.journal.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import fr.upem.journal.newsfeed.NewsCategory;
 import fr.upem.journal.R;
 import fr.upem.journal.database.DatabaseHelper;
+import fr.upem.journal.newsfeed.NewsCategory;
 
 public class EditCategoriesActivity extends AppCompatActivity {
 
@@ -39,6 +42,15 @@ public class EditCategoriesActivity extends AppCompatActivity {
         }
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoryTitles);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String categoryTitle = (String) listView.getItemAtPosition(position);
+                Intent intent = new Intent(EditCategoriesActivity.this, EditNewsFeedsActivity.class);
+                intent.putExtra("title", categoryTitle);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
