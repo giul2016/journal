@@ -19,7 +19,7 @@ public class EditNewsFeedsFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private String categoryTitle;
-    private ArrayList<String> newsFeedLabels;
+    private ArrayList<String> newsFeedLabels = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,18 +36,26 @@ public class EditNewsFeedsFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_edit_feeds, container, false);
 
         listView = (ListView) layout.findViewById(R.id.listView);
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(layout.getContext());
-        ArrayList<NewsFeed> newsFeeds = databaseHelper.selectNewsFeedsByCategory(categoryTitle);
-        newsFeedLabels = new ArrayList<>();
-        for (NewsFeed newsFeed : newsFeeds) {
-            newsFeedLabels.add(newsFeed.getLabel());
-        }
         adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, newsFeedLabels);
         listView.setAdapter(adapter);
+        loadData();
 
         return layout;
     }
 
+    public void updateContent(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+        loadData();
+    }
+
+    private void loadData() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        ArrayList<NewsFeed> newsFeeds = databaseHelper.selectNewsFeedsByCategory(categoryTitle);
+        newsFeedLabels.clear();
+        for (NewsFeed newsFeed : newsFeeds) {
+            newsFeedLabels.add(newsFeed.getLabel());
+        }
+        adapter.notifyDataSetChanged();
+    }
 
 }
