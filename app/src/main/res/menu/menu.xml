@@ -7,4 +7,9 @@
         android:title="@string/actionSettings"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/actionEditCategories"
+        android:title="@string/actionEditCategories"
+        app:showAsAction="never"/>
+
 </menu>

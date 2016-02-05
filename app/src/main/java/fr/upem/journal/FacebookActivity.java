@@ -98,10 +98,15 @@ public class FacebookActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.actionSettings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                Intent intentSettings = new Intent(this, SettingsActivity.class);
+                startActivity(intentSettings);
+                break;
+            case R.id.actionEditCategories:
+                Intent intentEdit = new Intent(this, EditCategoriesActivity.class);
+                startActivity(intentEdit);
+                break;
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 }

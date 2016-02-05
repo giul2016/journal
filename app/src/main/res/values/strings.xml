@@ -10,4 +10,6 @@
     <string name="drawerOpen">Drawer Open</string>
     <string name="drawerClose">Drawer Close</string>
     <string name="explore">Explore</string>
+    <string name="actionEditCategories">Edit Categories</string>
+    <string name="actionAddCategory">Add Category</string>
 </resources>
