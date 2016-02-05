@@ -1,7 +1,9 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import fr.upem.journal.fragment.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 

@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".NewsFeedActivity"
+            android:name=".activity.NewsFeedActivity"
             android:label="@string/title_activity_news"
             android:launchMode="singleTop">
             <intent-filter>
@@ -20,26 +20,26 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".WebActivity">
+        <activity android:name=".activity.WebActivity">
         </activity>
         <activity
-            android:name=".FacebookActivity"
+            android:name=".activity.FacebookActivity"
             android:label="@string/facebook">
         </activity>
         <activity
-            android:name=".TwitterActivity"
+            android:name=".activity.TwitterActivity"
             android:label="@string/twitter">
         </activity>
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".activity.SettingsActivity">
         </activity>
         <activity
-            android:name=".NewsContentActivity"
-            android:parentActivityName=".NewsFeedActivity">
+            android:name=".activity.NewsContentActivity"
+            android:parentActivityName=".activity.NewsFeedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".NewsFeedActivity"/>
+                android:value=".activity.NewsFeedActivity"/>
         </activity>
-        <activity android:name=".EditCategoriesActivity">
+        <activity android:name=".activity.EditCategoriesActivity">
         </activity>
     </application>
 

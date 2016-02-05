@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
+
+import fr.upem.journal.newsfeed.NewsCategory;
+import fr.upem.journal.fragment.NewsFeedFragment;
 
 public class NewsFeedFragmentPagerAdapter extends FragmentPagerAdapter {
 

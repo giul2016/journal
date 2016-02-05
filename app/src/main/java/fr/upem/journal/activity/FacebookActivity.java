@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class TwitterActivity extends AppCompatActivity {
+import fr.upem.journal.R;
+
+public class FacebookActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -26,7 +28,7 @@ public class TwitterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_twitter);
+        setContentView(R.layout.activity_facebook);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,13 +57,13 @@ public class TwitterActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (position == 0) {
-                    Intent intent = new Intent(TwitterActivity.this, NewsFeedActivity.class);
+                    Intent intent = new Intent(FacebookActivity.this, NewsFeedActivity.class);
                     startActivity(intent);
-                } else if (position == 1) {
-                    Intent intent = new Intent(TwitterActivity.this, FacebookActivity.class);
+                } else if (position == 2) {
+                    Intent intent = new Intent(FacebookActivity.this, TwitterActivity.class);
                     startActivity(intent);
                 } else if (position == 3) {
-                    Intent intent = new Intent(TwitterActivity.this, SettingsActivity.class);
+                    Intent intent = new Intent(FacebookActivity.this, SettingsActivity.class);
                     startActivity(intent);
                 }
             }

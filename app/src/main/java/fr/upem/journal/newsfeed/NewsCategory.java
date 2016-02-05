@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.newsfeed;
 
 import java.util.ArrayList;
 

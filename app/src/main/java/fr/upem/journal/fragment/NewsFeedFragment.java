@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.upem.journal.tasks.FetchRSSFeedTask;
+import fr.upem.journal.newsfeed.NewsFeed;
+import fr.upem.journal.adapter.NewsFeedAdapter;
+import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.R;
+import fr.upem.journal.activity.NewsContentActivity;
+import fr.upem.journal.task.FetchRSSFeedTask;
 
 public class NewsFeedFragment extends Fragment implements AdapterView.OnItemClickListener {
 

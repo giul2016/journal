@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-import fr.upem.journal.NewsCategory;
-import fr.upem.journal.NewsFeed;
+import fr.upem.journal.newsfeed.NewsCategory;
+import fr.upem.journal.newsfeed.NewsFeed;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;

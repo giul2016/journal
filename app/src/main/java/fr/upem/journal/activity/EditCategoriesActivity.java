@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import fr.upem.journal.newsfeed.NewsCategory;
+import fr.upem.journal.R;
 import fr.upem.journal.database.DatabaseHelper;
 
 public class EditCategoriesActivity extends AppCompatActivity {

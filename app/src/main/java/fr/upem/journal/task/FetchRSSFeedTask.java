@@ -1,4 +1,4 @@
-package fr.upem.journal.tasks;
+package fr.upem.journal.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,8 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.upem.journal.NewsFeedItem;
-import fr.upem.journal.NewsFeed;
+import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.newsfeed.NewsFeed;
 import fr.upem.journal.utils.RSSParser;
 
 public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<NewsFeedItem>> {

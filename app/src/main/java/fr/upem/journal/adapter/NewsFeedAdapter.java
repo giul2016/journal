@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.adapter;
 
 import android.content.Context;
 import android.text.Html;
@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+
+import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.R;
 
 public class NewsFeedAdapter extends BaseAdapter {
 

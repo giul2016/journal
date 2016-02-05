@@ -1,8 +1,10 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
+
+import fr.upem.journal.R;
 
 public class WebActivity extends AppCompatActivity {
 

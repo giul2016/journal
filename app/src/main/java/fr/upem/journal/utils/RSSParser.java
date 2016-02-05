@@ -11,7 +11,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.upem.journal.NewsFeedItem;
+import fr.upem.journal.newsfeed.NewsFeedItem;
 
 
 public class RSSParser {

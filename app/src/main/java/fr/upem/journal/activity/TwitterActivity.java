@@ -1,11 +1,8 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import fr.upem.journal.R;
 
-import fr.upem.journal.database.DatabaseHelper;
-
-public class NewsFeedActivity extends AppCompatActivity {
+public class TwitterActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -30,19 +25,10 @@ public class NewsFeedActivity extends AppCompatActivity {
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private NewsFeedFragmentPagerAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
-
-        if (isFirstTime()) {
-            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-            databaseHelper.initialData();
-        }
+        setContentView(R.layout.activity_twitter);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,26 +53,17 @@ public class NewsFeedActivity extends AppCompatActivity {
         drawerList = (ListView) findViewById(R.id.leftDrawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
 
-        adapter = new NewsFeedFragmentPagerAdapter(getSupportFragmentManager(), NewsFeedActivity.this,
-                loadDataFromDatabase());
-
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 1) {
-                    Intent intent = new Intent(NewsFeedActivity.this, FacebookActivity.class);
+                if (position == 0) {
+                    Intent intent = new Intent(TwitterActivity.this, NewsFeedActivity.class);
                     startActivity(intent);
-                } else if (position == 2) {
-                    Intent intent = new Intent(NewsFeedActivity.this, TwitterActivity.class);
+                } else if (position == 1) {
+                    Intent intent = new Intent(TwitterActivity.this, FacebookActivity.class);
                     startActivity(intent);
                 } else if (position == 3) {
-                    Intent intent = new Intent(NewsFeedActivity.this, SettingsActivity.class);
+                    Intent intent = new Intent(TwitterActivity.this, SettingsActivity.class);
                     startActivity(intent);
                 }
             }
@@ -134,21 +111,4 @@ public class NewsFeedActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private ArrayList<NewsCategory> loadDataFromDatabase() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-
-        return databaseHelper.selectNewsCategories();
-    }
-
-    private boolean isFirstTime() {
-        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
-        if (preferences.getBoolean("first_time", true)) {
-            preferences.edit().putBoolean("first_time", false).apply();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }

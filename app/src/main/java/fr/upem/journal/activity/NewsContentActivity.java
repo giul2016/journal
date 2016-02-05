@@ -1,4 +1,4 @@
-package fr.upem.journal;
+package fr.upem.journal.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.R;
 
 public class NewsContentActivity extends AppCompatActivity {
 
