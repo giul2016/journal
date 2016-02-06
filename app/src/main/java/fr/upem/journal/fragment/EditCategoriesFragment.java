@@ -25,15 +25,17 @@ public class EditCategoriesFragment extends Fragment {
     private OnItemSelectedListener callback;
     private ListView listView;
     private ArrayAdapter<String> adapter;
+    private ArrayList<String> categoryTitles;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_edit_categories, container, false);
 
-        listView = (ListView) layout.findViewById(R.id.listView);
+        listView = (ListView) layout.findViewById(R.id.categorylistView);
         DatabaseHelper databaseHelper = new DatabaseHelper(layout.getContext());
         ArrayList<NewsCategory> newsCategories = databaseHelper.selectNewsCategories();
-        ArrayList<String> categoryTitles = new ArrayList<>();
+        databaseHelper.close();
+        categoryTitles = new ArrayList<>();
         for (NewsCategory newsCategory : newsCategories) {
             categoryTitles.add(newsCategory.getTitle());
         }

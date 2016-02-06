@@ -35,7 +35,7 @@ public class EditNewsFeedsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_edit_feeds, container, false);
 
-        listView = (ListView) layout.findViewById(R.id.listView);
+        listView = (ListView) layout.findViewById(R.id.newsFeedlistView);
         adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, newsFeedLabels);
         listView.setAdapter(adapter);
         loadData();
@@ -51,6 +51,7 @@ public class EditNewsFeedsFragment extends Fragment {
     private void loadData() {
         DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
         ArrayList<NewsFeed> newsFeeds = databaseHelper.selectNewsFeedsByCategory(categoryTitle);
+        databaseHelper.close();
         newsFeedLabels.clear();
         for (NewsFeed newsFeed : newsFeeds) {
             newsFeedLabels.add(newsFeed.getLabel());
