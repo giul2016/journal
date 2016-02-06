@@ -62,4 +62,9 @@ public class EditCategoriesFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement OnItemSelectedListener");
         }
     }
+
+    public void addCategoryTitle(String categoryTitle) {
+        categoryTitles.add(categoryTitle);
+        adapter.notifyDataSetChanged();
+    }
 }

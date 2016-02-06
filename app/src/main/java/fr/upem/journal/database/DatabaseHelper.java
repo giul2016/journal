@@ -3,8 +3,10 @@ package fr.upem.journal.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -39,21 +41,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DatabaseContract.NewsFeed.COLUMN_NAME_LABEL, newsFeed.getLabel());
         values.put(DatabaseContract.NewsFeed.COLUMN_NAME_LINK, newsFeed.getLink());
         values.put(DatabaseContract.NewsFeed.COLUMN_NAME_CATEGORY, category);
-
-        db.insertWithOnConflict(DatabaseContract.NewsFeed.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_ABORT);
+        try {
+            db.insertWithOnConflict(DatabaseContract.NewsFeed.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_ABORT);
+        } catch (SQLiteConstraintException e) {
+            Log.d("DB", "Conflict on insertion");
+        }
     }
 
-    private void insertNewsCategory(NewsCategory newsCategory) {
+    public boolean insertNewsCategory(NewsCategory newsCategory) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.NewsCategory.COLUMN_NAME_TITLE, newsCategory.getTitle());
 
-        db.insertWithOnConflict(DatabaseContract.NewsCategory.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_ABORT);
+        try {
+            db.insertWithOnConflict(DatabaseContract.NewsCategory.TABLE_NAME, null, values, SQLiteDatabase
+                    .CONFLICT_ABORT);
+        } catch (SQLiteConstraintException e) {
+            Log.d("DB", "Conflict on insertion");
+            return false;
+        }
 
         for (NewsFeed newsFeed : newsCategory.getFeeds()) {
             insertNewsFeed(newsFeed, newsCategory.getTitle());
         }
+
+        return true;
     }
 
     public ArrayList<NewsCategory> selectNewsCategories() {

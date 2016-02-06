@@ -10,10 +10,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import fr.upem.journal.R;
+import fr.upem.journal.database.DatabaseHelper;
+import fr.upem.journal.dialog.AddCategoryDialogFragment;
 import fr.upem.journal.fragment.EditCategoriesFragment;
 import fr.upem.journal.fragment.EditNewsFeedsFragment;
+import fr.upem.journal.newsfeed.NewsCategory;
 
-public class EditCategoriesActivity extends AppCompatActivity implements EditCategoriesFragment.OnItemSelectedListener {
+public class EditCategoriesActivity extends AppCompatActivity implements EditCategoriesFragment
+        .OnItemSelectedListener, AddCategoryDialogFragment.AddCategoryDialogListener {
 
     private Toolbar toolbar;
     private String selectedCategory;
@@ -60,7 +64,8 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
         switch (item.getItemId()) {
             case R.id.actionAddCategory:
                 if (editNewsFeedsFragment == null || !editNewsFeedsFragment.isInLayout()) {
-                    Toast.makeText(getApplicationContext(), "Add Category", Toast.LENGTH_LONG).show();
+                    AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment();
+                    dialogFragment.show(getSupportFragmentManager(), "addCategory");
                 } else {
                     Toast.makeText(getApplicationContext(), "Add Category or News Feed", Toast.LENGTH_LONG).show();
                 }
@@ -80,5 +85,21 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
         } else {
             editNewsFeedsFragment.updateContent(categoryTitle);
         }
+    }
+
+    @Override
+    public void onDialogPositiveClick(String categoryTitle) {
+        NewsCategory newsCategory = new NewsCategory(categoryTitle);
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        if (databaseHelper.insertNewsCategory(newsCategory)) {
+            EditCategoriesFragment fragment = (EditCategoriesFragment) getSupportFragmentManager().findFragmentById(
+                    R.id.editCategoriesFragment);
+            fragment.addCategoryTitle(categoryTitle);
+        }
+        databaseHelper.close();
+    }
+
+    @Override
+    public void onDialogNegativeClick() {
     }
 }
