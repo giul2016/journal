@@ -16,7 +16,7 @@ import fr.upem.journal.fragment.EditNewsFeedsFragment;
 public class EditCategoriesActivity extends AppCompatActivity implements EditCategoriesFragment.OnItemSelectedListener {
 
     private Toolbar toolbar;
-    private EditCategoriesFragment editCategoriesFragment;
+    private String selectedCategory;
     private EditNewsFeedsFragment editNewsFeedsFragment;
 
     @Override
@@ -27,19 +27,25 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        editCategoriesFragment = new EditCategoriesFragment();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.editCategoriesFragment, editCategoriesFragment)
-                .commit();
-
-        if (findViewById(R.id.editNewsFeedsFragment) != null) {
-            Bundle args = new Bundle();
-            args.putString("title", null);
-            editNewsFeedsFragment = new EditNewsFeedsFragment();
-            editNewsFeedsFragment.setArguments(args);
-            getSupportFragmentManager().beginTransaction().replace(R.id.editNewsFeedsFragment, editNewsFeedsFragment)
-                    .commit();
+        if (savedInstanceState != null) {
+            selectedCategory = savedInstanceState.getString("selectedCategory");
         }
+
+        editNewsFeedsFragment = (EditNewsFeedsFragment) getSupportFragmentManager().
+                findFragmentById(R.id.editNewsFeedsFragment);
+
+        if (selectedCategory != null) {
+            if (editNewsFeedsFragment != null && editNewsFeedsFragment.isInLayout()) {
+                editNewsFeedsFragment.updateContent(selectedCategory);
+            }
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("selectedCategory", selectedCategory);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.actionAddCategory:
-                if (editNewsFeedsFragment == null) {
+                if (editNewsFeedsFragment == null || !editNewsFeedsFragment.isInLayout()) {
                     Toast.makeText(getApplicationContext(), "Add Category", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Add Category or News Feed", Toast.LENGTH_LONG).show();
@@ -66,7 +72,8 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
 
     @Override
     public void onItemSelected(String categoryTitle) {
-        if (editNewsFeedsFragment == null) {
+        selectedCategory = categoryTitle;
+        if (editNewsFeedsFragment == null || !editNewsFeedsFragment.isInLayout()) {
             Intent intent = new Intent(this, EditNewsFeedsActivity.class);
             intent.putExtra("title", categoryTitle);
             startActivity(intent);
