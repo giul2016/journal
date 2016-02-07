@@ -59,4 +59,8 @@ public class EditNewsFeedsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void addNewsFeedLabel(String label) {
+        newsFeedLabels.add(label);
+        adapter.notifyDataSetChanged();
+    }
 }

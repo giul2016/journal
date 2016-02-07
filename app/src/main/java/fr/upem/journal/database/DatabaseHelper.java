@@ -34,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private void insertNewsFeed(NewsFeed newsFeed, String category) {
+    public boolean insertNewsFeed(NewsFeed newsFeed, String category) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -45,7 +45,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.insertWithOnConflict(DatabaseContract.NewsFeed.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_ABORT);
         } catch (SQLiteConstraintException e) {
             Log.d("DB", "Conflict on insertion");
+            return false;
         }
+
+        return true;
     }
 
     public boolean insertNewsCategory(NewsCategory newsCategory) {

@@ -14,4 +14,8 @@
     <string name="actionAddCategory">Add Category</string>
     <string name="addCategory">Add new category</string>
     <string name="addCategoryDialogMessage">Enter a title for the new category</string>
+    <string name="addNewsFeed">Add new news feed</string>
+    <string name="addNewsFeedLabelEditText">Label</string>
+    <string name="addNewsFeedLinkEditText">Link</string>
+    <string name="add">Add</string>
 </resources>

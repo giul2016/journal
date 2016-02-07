@@ -55,14 +55,14 @@ public class EditCategoriesActivity extends AppCompatActivity implements EditCat
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.edit_categories_menu, menu);
+        inflater.inflate(R.menu.edit_news_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.actionAddCategory:
+            case R.id.actionAdd:
                 if (editNewsFeedsFragment == null || !editNewsFeedsFragment.isInLayout()) {
                     AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment();
                     dialogFragment.show(getSupportFragmentManager(), "addCategory");
