@@ -18,4 +18,6 @@
     <string name="addNewsFeedLabelEditText">Label</string>
     <string name="addNewsFeedLinkEditText">Link</string>
     <string name="add">Add</string>
+
+    <string name="facebook_app_id">185863238451126</string>
 </resources>

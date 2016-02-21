@@ -15,6 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+
 import fr.upem.journal.R;
 
 public class FacebookActivity extends AppCompatActivity {
@@ -25,9 +28,13 @@ public class FacebookActivity extends AppCompatActivity {
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
 
+    private  CallbackManager callbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_facebook);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
