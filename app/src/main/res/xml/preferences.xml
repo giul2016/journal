@@ -9,7 +9,7 @@
             android:defaultValue="true"
             android:key="notifications"
             android:title="@string/prefNotificationsTitle"/>
-
     </PreferenceCategory>
+
 
 </PreferenceScreen>

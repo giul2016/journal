@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,9 +15,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.AccessToken;
+
+import org.json.JSONObject;
 
 import fr.upem.journal.R;
 
@@ -28,7 +40,12 @@ public class FacebookActivity extends AppCompatActivity {
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
 
-    private  CallbackManager callbackManager;
+    private CallbackManager callbackManager;
+    private LoginButton login_btn;
+    private TextView name_tv;
+    private ProfilePictureView pictureView;
+    private Boolean login_stat = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +54,7 @@ public class FacebookActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_facebook);
 
+        // region Left toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -78,6 +96,60 @@ public class FacebookActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        // endregion left toolbar
+
+        //region Init
+        login_btn = (LoginButton)findViewById(R.id.login_button);
+        name_tv = (TextView)findViewById(R.id.name);
+        pictureView = (ProfilePictureView) findViewById(R.id.picture);
+
+        login_stat = false;
+
+        name_tv.setText("You are not logged in. Please log in!");
+        //endregion Init
+
+
+
+        //region -----Login Button-----
+        login_btn.setReadPermissions("user_friends");
+        login_btn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                login_stat = true;
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+
+                                String id = object.optString("id");
+                                String name = object.optString("name");
+                                String birthday = object.optString("birthday");
+                                name_tv.setText("Hi " + name + "!");
+                                pictureView.setProfileId(id);
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                name_tv.setText("Login canceled.");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                name_tv.setText("Login failed.");
+            }
+        });
+
+        //endregion
+
+
+
+
     }
 
     @Override
@@ -117,5 +189,10 @@ public class FacebookActivity extends AppCompatActivity {
             default:
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
