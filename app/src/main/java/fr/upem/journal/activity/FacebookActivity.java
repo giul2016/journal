@@ -1,8 +1,11 @@
 package fr.upem.journal.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +41,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
+import fr.upem.journal.adapter.FbPagerAdapter;
+import fr.upem.journal.fragment.FbInfoFragment;
 
 public class FacebookActivity extends AppCompatActivity {
 
@@ -48,11 +53,6 @@ public class FacebookActivity extends AppCompatActivity {
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
 
     private CallbackManager callbackManager;
-    private LoginButton login_btn;
-    private TextView name_tv;
-    private ProfilePictureView pictureView;
-    private String[] permissions;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,68 +105,12 @@ public class FacebookActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         // endregion left toolbar
 
-        //region Init
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new FbPagerAdapter(getSupportFragmentManager(), FacebookActivity.this));
 
-        login_btn = (LoginButton)findViewById(R.id.login_button);
-        name_tv = (TextView)findViewById(R.id.name);
-        pictureView = (ProfilePictureView) findViewById(R.id.picture);
-        permissions = new String[]{"user_friends","user_about_me","user_actions.music","user_birthday",
-                                    "user_likes","user_friends","user_photos","user_relationships",
-                                    "user_tagged_places","user_work_history","user_actions.books","user_actions.news",
-                                    "user_education_history","user_games_activity","user_location",
-                                    "user_posts","user_religion_politics","user_videos","user_actions.fitness",
-                                    "user_actions.video","user_events","user_hometown","user_managed_groups",
-                                    "user_relationship_details","user_status","user_website"};
-
-        if(AccessToken.getCurrentAccessToken()==null){
-            name_tv.setText("You are not logged in. Please log in!");
-        }
-        else {
-            init_info();
-        }
-
-        //endregion Init
-
-
-
-        //region -----Login-----
-        login_btn.setReadPermissions(permissions);
-        login_btn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-
-                                String id = object.optString("id");
-                                String name = object.optString("name");
-                                name_tv.setText("Hi " + name + "!");
-                                pictureView.setProfileId(id);
-                                getLikedPages();
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-
-            @Override
-            public void onCancel() {
-                name_tv.setText("Login canceled.");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                name_tv.setText("Login failed.");
-            }
-        });
-
-
-        //endregion
-
-
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
 
     }
@@ -220,86 +164,5 @@ public class FacebookActivity extends AppCompatActivity {
 
     //endregion Config
 
-    //region function
-
-    public void init_info(){
-        Log.e("+++ init info", "ok");
-        GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        // Application code
-//                        Log.e("GraphResponse", response.toString());
-
-                                        object = response.getJSONObject();
-                                        String id = object.optString("id");
-                                        String name = object.optString("name");
-                                        String birthday = object.optString("birthday");
-                                        Log.d("++respons ",response.toString());
-                                        name_tv = (TextView)findViewById(R.id.name);
-                                        name_tv.setText("Hi " + name +birthday);
-                                        ProfilePictureView profilePictureView = (ProfilePictureView)findViewById(R.id.picture);
-                                        profilePictureView.setProfileId(id);
-
-                                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,gender,birthday,email,bio,photos{link}");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    private void getLikedPages(){
-        Log.e("+++ get pages", "ok");
-        GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(final JSONObject object, GraphResponse response) {
-                        // Application code
-//                        Log.e("GraphResponse", response.toString());
-
-                        GraphRequest likeRequest = GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(),
-                                "/me/likes/",
-                                new GraphRequest.Callback() {
-                                    @Override
-                                    public void onCompleted(GraphResponse response) {
-
-                                        try {
-//                                            Intent intent = new Intent(MainActivity.this,PagesList.class);
-                                            Log.d("GraphLikeResponse", "Likes:- " + response.toString());
-                                            JSONObject object = response.getJSONObject();
-                                            JSONArray array = object.getJSONArray("data");
-//                                            intent.putExtra("jsonPagesData",array.toString());
-//                                            startActivity(intent);
-                                            Log.e("GraphObject", "Likes:- " + array.toString());
-                                            ArrayList<String> pages_list = new ArrayList<String>();
-                                            for (int i=0; i<array.length();i++){
-                                                Log.e("+ name : ", ((JSONObject) array.get(i)).optString("name"));
-                                                pages_list.add(((JSONObject) array.get(i)).optString("name"));
-                                                ArrayAdapter adapter = new ArrayAdapter<String>(FacebookActivity.this, android.R.layout.simple_list_item_1, pages_list);
-                                                ListView listView = (ListView)findViewById(R.id.listView);
-                                                listView.setAdapter(adapter);
-
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                });
-                        likeRequest.executeAsync();
-
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,gender,birthday,email,bio,photos{link}");
-        request.setParameters(parameters);
-        request.executeAsync();
-
-    }
-
-    //endregion function
 
 }
