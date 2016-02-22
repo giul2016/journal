@@ -14,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -28,7 +30,12 @@ import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.AccessToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import fr.upem.journal.R;
 
@@ -44,7 +51,7 @@ public class FacebookActivity extends AppCompatActivity {
     private LoginButton login_btn;
     private TextView name_tv;
     private ProfilePictureView pictureView;
-    private Boolean login_stat = false;
+    private String[] permissions;
 
 
     @Override
@@ -99,23 +106,34 @@ public class FacebookActivity extends AppCompatActivity {
         // endregion left toolbar
 
         //region Init
+
         login_btn = (LoginButton)findViewById(R.id.login_button);
         name_tv = (TextView)findViewById(R.id.name);
         pictureView = (ProfilePictureView) findViewById(R.id.picture);
+        permissions = new String[]{"user_friends","user_about_me","user_actions.music","user_birthday",
+                                    "user_likes","user_friends","user_photos","user_relationships",
+                                    "user_tagged_places","user_work_history","user_actions.books","user_actions.news",
+                                    "user_education_history","user_games_activity","user_location",
+                                    "user_posts","user_religion_politics","user_videos","user_actions.fitness",
+                                    "user_actions.video","user_events","user_hometown","user_managed_groups",
+                                    "user_relationship_details","user_status","user_website"};
 
-        login_stat = false;
+        if(AccessToken.getCurrentAccessToken()==null){
+            name_tv.setText("You are not logged in. Please log in!");
+        }
+        else {
+            init_info();
+        }
 
-        name_tv.setText("You are not logged in. Please log in!");
         //endregion Init
 
 
 
-        //region -----Login Button-----
-        login_btn.setReadPermissions("user_friends");
+        //region -----Login-----
+        login_btn.setReadPermissions(permissions);
         login_btn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                login_stat = true;
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
@@ -123,9 +141,9 @@ public class FacebookActivity extends AppCompatActivity {
 
                                 String id = object.optString("id");
                                 String name = object.optString("name");
-                                String birthday = object.optString("birthday");
                                 name_tv.setText("Hi " + name + "!");
                                 pictureView.setProfileId(id);
+                                getLikedPages();
                             }
                         });
                 Bundle parameters = new Bundle();
@@ -145,12 +163,16 @@ public class FacebookActivity extends AppCompatActivity {
             }
         });
 
+
         //endregion
 
 
 
 
     }
+
+
+    //region Config
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
@@ -195,4 +217,89 @@ public class FacebookActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+    //endregion Config
+
+    //region function
+
+    public void init_info(){
+        Log.e("+++ init info", "ok");
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        // Application code
+//                        Log.e("GraphResponse", response.toString());
+
+                                        object = response.getJSONObject();
+                                        String id = object.optString("id");
+                                        String name = object.optString("name");
+                                        String birthday = object.optString("birthday");
+                                        Log.d("++respons ",response.toString());
+                                        name_tv = (TextView)findViewById(R.id.name);
+                                        name_tv.setText("Hi " + name +birthday);
+                                        ProfilePictureView profilePictureView = (ProfilePictureView)findViewById(R.id.picture);
+                                        profilePictureView.setProfileId(id);
+
+                                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,link,gender,birthday,email,bio,photos{link}");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void getLikedPages(){
+        Log.e("+++ get pages", "ok");
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(final JSONObject object, GraphResponse response) {
+                        // Application code
+//                        Log.e("GraphResponse", response.toString());
+
+                        GraphRequest likeRequest = GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(),
+                                "/me/likes/",
+                                new GraphRequest.Callback() {
+                                    @Override
+                                    public void onCompleted(GraphResponse response) {
+
+                                        try {
+//                                            Intent intent = new Intent(MainActivity.this,PagesList.class);
+                                            Log.d("GraphLikeResponse", "Likes:- " + response.toString());
+                                            JSONObject object = response.getJSONObject();
+                                            JSONArray array = object.getJSONArray("data");
+//                                            intent.putExtra("jsonPagesData",array.toString());
+//                                            startActivity(intent);
+                                            Log.e("GraphObject", "Likes:- " + array.toString());
+                                            ArrayList<String> pages_list = new ArrayList<String>();
+                                            for (int i=0; i<array.length();i++){
+                                                Log.e("+ name : ", ((JSONObject) array.get(i)).optString("name"));
+                                                pages_list.add(((JSONObject) array.get(i)).optString("name"));
+                                                ArrayAdapter adapter = new ArrayAdapter<String>(FacebookActivity.this, android.R.layout.simple_list_item_1, pages_list);
+                                                ListView listView = (ListView)findViewById(R.id.listView);
+                                                listView.setAdapter(adapter);
+
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                });
+                        likeRequest.executeAsync();
+
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,link,gender,birthday,email,bio,photos{link}");
+        request.setParameters(parameters);
+        request.executeAsync();
+
+    }
+
+    //endregion function
+
 }

@@ -52,6 +52,17 @@
                     android:layout_span="4">
                 </com.facebook.login.widget.ProfilePictureView>
             </TableRow>
+            <TableRow>
+                <Button android:id="@+id/getPageBtn" android:text="get pages" />
+            </TableRow>
+            <TableRow>
+                <ListView
+                    android:layout_span="4"
+                    android:id="@+id/listView">
+
+                </ListView>
+
+            </TableRow>
         </TableLayout>
 
     </LinearLayout>
