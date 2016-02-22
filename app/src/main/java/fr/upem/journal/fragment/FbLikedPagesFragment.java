@@ -88,7 +88,11 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
 //                                            Intent intent = new Intent(MainActivity.this,PagesList.class);
                                             Log.d("GraphLikeResponse", "Likes:- " + response.toString());
                                             JSONObject object = response.getJSONObject();
-                                            JSONArray array = object.getJSONArray("data");
+                                            JSONArray array = new JSONArray();
+
+                                            if(object != null) {
+                                                array = object.getJSONArray("data");
+                                            }
 //                                            intent.putExtra("jsonPagesData",array.toString());
 //                                            startActivity(intent);
                                             Log.e("GraphObject", "Likes:- " + array.toString());
