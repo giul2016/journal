@@ -66,7 +66,12 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
         return view;
     }
 
-    //region Functions
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLikedPages();
+    }
+//region Functions
 
     private void getLikedPages(){
         Log.e("+++ get pages", "ok");

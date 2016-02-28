@@ -165,7 +165,12 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
         request.executeAsync();
     }
 
-    //endregion functions
+    @Override
+    public void onResume() {
+        super.onResume();
+        init_info();
+    }
+//endregion functions
 
 }
 
