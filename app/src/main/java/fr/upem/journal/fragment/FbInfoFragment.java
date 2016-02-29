@@ -146,16 +146,17 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         // Application code
 //                        Log.e("GraphResponse", response.toString());
-
                         object = response.getJSONObject();
-                        String id = object.optString("id");
-                        String name = object.optString("name");
-                        String birthday = object.optString("birthday");
-                        Log.d("++respons ",response.toString());
-                        name_tv = (TextView)getView().findViewById(R.id.name);
-                        name_tv.setText("Hi " + name +birthday);
-                        ProfilePictureView profilePictureView = (ProfilePictureView)getView().findViewById(R.id.picture);
-                        profilePictureView.setProfileId(id);
+                        if (object!=null) {
+                            String id = object.optString("id");
+                            String name = object.optString("name");
+                            String birthday = object.optString("birthday");
+                            Log.d("++respons ", response.toString());
+                            name_tv = (TextView) getView().findViewById(R.id.name);
+                            name_tv.setText("Hi " + name);
+                            ProfilePictureView profilePictureView = (ProfilePictureView) getView().findViewById(R.id.picture);
+                            profilePictureView.setProfileId(id);
+                        }
 
                     }
                 });
