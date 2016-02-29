@@ -32,6 +32,10 @@
         </com.facebook.login.widget.ProfilePictureView>
     </TableRow>
     <TableRow>
+        <EditText android:id="@+id/status_et" />
+        <TextView android:id="@+id/post_status_bttn" android:text="Update Status" />
+    </TableRow>
+    <TableRow>
         <ListView
             android:layout_span="4"
             android:id="@+id/listView">

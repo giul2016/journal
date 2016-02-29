@@ -2,6 +2,9 @@ package fr.upem.journal.fragment;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -9,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,15 +23,21 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.ShareApi;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import fr.upem.journal.R;
 import fr.upem.journal.adapter.FbPagerAdapter;
@@ -46,6 +56,9 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
     private ViewPager viewPager;
     private FbPagerAdapter mAdapter;
     private ActionBar actionBar;
+    private EditText status_et;
+    private TextView post_status_bttn;
+    private LoginManager manager;
 
     public static FbInfoFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -85,15 +98,48 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
                 "user_posts","user_religion_politics","user_videos","user_actions.fitness",
                 "user_actions.video","user_events","user_hometown","user_managed_groups",
                 "user_relationship_details","user_status","user_website"};
+        post_status_bttn = (TextView)view.findViewById(R.id.post_status_bttn);
+        status_et = (EditText)view.findViewById(R.id.status_et);
 
         if(AccessToken.getCurrentAccessToken()==null){
             name_tv.setText("You are not logged in. Please log in!");
+            post_status_bttn.setVisibility(View.INVISIBLE);
+            status_et.setVisibility(View.INVISIBLE);
         }
         else {
             init_info();
         }
 
         //endregion Init
+
+        //region share image + caption
+        post_status_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> permissionNeeds = Arrays.asList("publish_actions");
+//
+                manager = LoginManager.getInstance();
+
+                manager.logInWithPublishPermissions(getActivity(), permissionNeeds);
+
+                manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        publishImage(status_et.getText().toString(), R.drawable.images);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        System.out.println("onCancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        System.out.println("onError");
+                    }
+                });
+            }
+        });
 
         //region Log in
 
@@ -137,7 +183,32 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
 
     //region Functions
 
+    private void publishImage(String status_txt, int images){
+        Bitmap image = BitmapFactory.decodeResource(getResources(), images);
+
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .setCaption(status_txt)
+                .build();
+
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+
+        ShareApi.share(content, null);
+
+    }
+
     public void init_info(){
+        if(AccessToken.getCurrentAccessToken()==null){
+            name_tv.setText("You are not logged in. Please log in!");
+            post_status_bttn.setVisibility(View.INVISIBLE);
+            status_et.setVisibility(View.INVISIBLE);
+        }
+        else {
+            post_status_bttn.setVisibility(View.VISIBLE);
+            status_et.setVisibility(View.VISIBLE);
+        }
         Log.e("+++ init info", "ok");
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
