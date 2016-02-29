@@ -1,11 +1,16 @@
 package fr.upem.journal.fragment;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,13 +33,19 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.ShareApi;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +56,7 @@ import fr.upem.journal.adapter.FbPagerAdapter;
 /**
  * Created by TTTH on 2/22/2016.
  */
-public class FbInfoFragment extends android.support.v4.app.Fragment{
+public class FbInfoFragment extends android.support.v4.app.Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private CallbackManager callbackManager;
@@ -56,9 +67,11 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
     private ViewPager viewPager;
     private FbPagerAdapter mAdapter;
     private ActionBar actionBar;
-    private EditText status_et;
-    private TextView post_status_bttn;
+    private ShareButton post_photo_bttn;
+    private ShareButton post_video_bttn;
+    private ShareButton post_link_bttn;
     private LoginManager manager;
+    private ShareDialog shareDialog;
 
     public static FbInfoFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -77,7 +90,31 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        //region check photo, video
+        if (resultCode == Activity.RESULT_OK) {
+
+            if (requestCode == 10) {
+                Uri selectedImageUri = data.getData();
+                String selectedImagePath = getRealPathFromURI(selectedImageUri);
+                Log.e("abc", selectedImagePath);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+                    publishImage(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == 20) {
+                Uri selectedVideoUri = data.getData();
+                String selectedVideoPath = getRealPathFromURI(selectedVideoUri);
+                Log.e("abc", selectedVideoPath.toString());
+                publishVideo(selectedVideoPath.toString());
+            }
+        }
+
+        //endregion check photo, video
     }
 
 
@@ -88,58 +125,94 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
 
         //region Init
 
-        login_btn = (LoginButton)view.findViewById(R.id.login_button);
-        name_tv = (TextView)view.findViewById(R.id.name);
+        login_btn = (LoginButton) view.findViewById(R.id.login_button);
+        name_tv = (TextView) view.findViewById(R.id.name);
         pictureView = (ProfilePictureView) view.findViewById(R.id.picture);
-        permissions = new String[]{"user_friends","user_about_me","user_actions.music","user_birthday",
-                "user_likes","user_friends","user_photos","user_relationships",
-                "user_tagged_places","user_work_history","user_actions.books","user_actions.news",
-                "user_education_history","user_games_activity","user_location",
-                "user_posts","user_religion_politics","user_videos","user_actions.fitness",
-                "user_actions.video","user_events","user_hometown","user_managed_groups",
-                "user_relationship_details","user_status","user_website"};
-        post_status_bttn = (TextView)view.findViewById(R.id.post_status_bttn);
-        status_et = (EditText)view.findViewById(R.id.status_et);
+        permissions = new String[]{"user_friends", "user_about_me", "user_actions.music", "user_birthday",
+                "user_likes", "user_friends", "user_photos", "user_relationships",
+                "user_tagged_places", "user_work_history", "user_actions.books", "user_actions.news",
+                "user_education_history", "user_games_activity", "user_location",
+                "user_posts", "user_religion_politics", "user_videos", "user_actions.fitness",
+                "user_actions.video", "user_events", "user_hometown", "user_managed_groups",
+                "user_relationship_details", "user_status", "user_website"};
+        post_photo_bttn = (ShareButton) view.findViewById(R.id.post_photo_bttn);
+        post_video_bttn = (ShareButton) view.findViewById(R.id.post_video_bttn);
+        post_link_bttn = (ShareButton) view.findViewById(R.id.post_link_bttn);
+        shareDialog = new ShareDialog(this);
 
-        if(AccessToken.getCurrentAccessToken()==null){
+        if (AccessToken.getCurrentAccessToken() == null) {
             name_tv.setText("You are not logged in. Please log in!");
-            post_status_bttn.setVisibility(View.INVISIBLE);
-            status_et.setVisibility(View.INVISIBLE);
-        }
-        else {
+            post_photo_bttn.setVisibility(View.INVISIBLE);
+        } else {
             init_info();
         }
 
         //endregion Init
 
-        //region share image + caption
-        post_status_bttn.setOnClickListener(new View.OnClickListener() {
+        //region share image
+        post_photo_bttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> permissionNeeds = Arrays.asList("publish_actions");
-//
-                manager = LoginManager.getInstance();
+//                    Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.images);
+//                    SharePhoto photo = new SharePhoto.Builder()
+//                            .setBitmap(img)
+//                            .build();
+//                    SharePhotoContent content = new SharePhotoContent.Builder()
+//                            .addPhoto(photo)
+//                            .build();
+//                    shareDialog.show(content);
 
-                manager.logInWithPublishPermissions(getActivity(), permissionNeeds);
-
-                manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        publishImage(status_et.getText().toString(), R.drawable.images);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        System.out.println("onCancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        System.out.println("onError");
-                    }
-                });
+                if (Build.VERSION.SDK_INT <= 19) {
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    i.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(i, 10);
+                } else if (Build.VERSION.SDK_INT > 19) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 10);
+                }
             }
         });
+
+        //endregion share image
+
+
+        //region share video
+        post_video_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT <= 19) {
+                    Intent i = new Intent();
+                    i.setType("video/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    i.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(i, 20);
+                } else if (Build.VERSION.SDK_INT > 19) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 20);
+                }
+            }
+        });
+
+        //endregion share video
+
+
+        //region share link
+        post_link_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentTitle("Title Description")
+                        .setContentDescription("Description")
+                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                        .build();
+                post_link_bttn.setShareContent(content);
+                shareDialog.show(content);
+            }
+        });
+
+        // endregion share link
 
         //region Log in
 
@@ -183,31 +256,56 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
 
     //region Functions
 
-    private void publishImage(String status_txt, int images){
-        Bitmap image = BitmapFactory.decodeResource(getResources(), images);
-
+    //region post photo
+    private void publishImage(Bitmap img) {
+//        Bitmap image = BitmapFactory.decodeResource(getResources(), images);
+//
+//        SharePhoto photo = new SharePhoto.Builder()
+//                .setBitmap(image)
+//                .setCaption(status_txt)
+//                .build();
+//
+//        SharePhotoContent content = new SharePhotoContent.Builder()
+//                .addPhoto(photo)
+//                .build();
+//
+//        ShareApi.share(content, null);
         SharePhoto photo = new SharePhoto.Builder()
-                .setBitmap(image)
-                .setCaption(status_txt)
+                .setBitmap(img)
                 .build();
-
         SharePhotoContent content = new SharePhotoContent.Builder()
                 .addPhoto(photo)
                 .build();
-
-        ShareApi.share(content, null);
-
+        Log.e("abc", content.toString());
+        shareDialog.show(content);
     }
 
-    public void init_info(){
-        if(AccessToken.getCurrentAccessToken()==null){
+    //endregion post photo
+
+    //region post video
+    private void publishVideo(String videoUrl) {
+        Uri videoFileUri = Uri.parse("file://" + videoUrl);
+        Log.e("publish video", "ok");
+        ShareVideo video = new ShareVideo.Builder()
+                .setLocalUrl(videoFileUri)
+                .build();
+
+        ShareVideoContent content = new ShareVideoContent.Builder()
+                .setVideo(video)
+                .build();
+        Log.e("abc", videoUrl.toString());
+        shareDialog.show(content);
+    }
+
+    //endregion post video
+
+    //region init
+    public void init_info() {
+        if (AccessToken.getCurrentAccessToken() == null) {
             name_tv.setText("You are not logged in. Please log in!");
-            post_status_bttn.setVisibility(View.INVISIBLE);
-            status_et.setVisibility(View.INVISIBLE);
-        }
-        else {
-            post_status_bttn.setVisibility(View.VISIBLE);
-            status_et.setVisibility(View.VISIBLE);
+            post_photo_bttn.setVisibility(View.INVISIBLE);
+        } else {
+            post_photo_bttn.setVisibility(View.VISIBLE);
         }
         Log.e("+++ init info", "ok");
         GraphRequest request = GraphRequest.newMeRequest(
@@ -218,7 +316,7 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
                         // Application code
 //                        Log.e("GraphResponse", response.toString());
                         object = response.getJSONObject();
-                        if (object!=null) {
+                        if (object != null) {
                             String id = object.optString("id");
                             String name = object.optString("name");
                             String birthday = object.optString("birthday");
@@ -237,12 +335,30 @@ public class FbInfoFragment extends android.support.v4.app.Fragment{
         request.executeAsync();
     }
 
+    //endregion init
+
     @Override
     public void onResume() {
         super.onResume();
         init_info();
     }
 //endregion functions
+
+
+    public String getRealPathFromURI(Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
+    }
 
 }
 

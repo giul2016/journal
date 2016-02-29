@@ -103,7 +103,7 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
                                             Log.e("GraphObject", "Likes:- " + array.toString());
                                             ArrayList<String> pages_list = new ArrayList<String>();
                                             for (int i=0; i<array.length();i++){
-                                                Log.e("+ name : ", ((JSONObject) array.get(i)).optString("name"));
+//                                                Log.e("+ name : ", ((JSONObject) array.get(i)).optString("name"));
                                                 pages_list.add(((JSONObject) array.get(i)).optString("name"));
                                                 facebookPage.add(new FbPage((JSONObject) array.get(i)));
 
