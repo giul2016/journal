@@ -4,27 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<!--    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <TableRow>
-            <TextView
-                android:id="@+id/twitter_userName_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="28dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/twitter_user_picture_iv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </TableRow>
-
-    </TableLayout>
--->
     <TextView android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

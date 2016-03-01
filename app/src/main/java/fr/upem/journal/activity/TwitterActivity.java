@@ -154,6 +154,7 @@ public class TwitterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+
         textView = (TextView) findViewById(R.id.tv_username);
 
         // loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);

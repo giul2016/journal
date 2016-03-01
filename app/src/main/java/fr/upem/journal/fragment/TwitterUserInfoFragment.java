@@ -27,8 +27,8 @@ public class TwitterUserInfoFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,5 +40,5 @@ public class TwitterUserInfoFragment extends ListFragment {
     public void setUser(User user){
         this.user = user;
     }
-
+    
 }
