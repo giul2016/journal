@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
+import fr.upem.journal.database.*;
 
 /**
  * Created by TTTH on 2/22/2016.
@@ -27,6 +28,8 @@ import fr.upem.journal.R;
 public class FbPageFeed extends Activity {
 
     ListView pageFeedLV;
+    ArrayList<fr.upem.journal.database.FbPageFeed> facebookPageFeed = new ArrayList<fr.upem.journal.database.FbPageFeed>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,35 +40,39 @@ public class FbPageFeed extends Activity {
         String pageId = intent.getStringExtra("pageId");
         final String pageName = intent.getStringExtra("pageName");
 
-        new GraphRequest(
+
+        GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/"+pageId+"/feed",
-                null,
-                HttpMethod.GET,
                 new GraphRequest.Callback() {
+                    @Override
                     public void onCompleted(GraphResponse response) {
+                        Log.e("page+++++",response.toString());
+                        JSONObject object = response.getJSONObject();
                         try {
-                            JSONObject object = response.getJSONObject();
                             JSONArray array = object.getJSONArray("data");
-                            Log.e("ok;", array.toString());
                             ArrayList<String> pages_feed = new ArrayList<String>();
                             for (int i = 0; i < array.length(); i++) {
-                                Log.e("+ feed : ", ((JSONObject) array.get(i)).optString("message"));
+//                                Log.e("+ feed : ", ((JSONObject) array.get(i)).optString("message"));
                                 pages_feed.add(((JSONObject) array.get(i)).optString("message"));
+//                                facebookPageFeed.add(new fr.upem.journal.database.FbPageFeed((JSONObject) array.get(i)));
 
                             }
-                            TextView pageName_tv = (TextView)findViewById(R.id.pageName);
-                            pageName_tv.setText(pageName);
-                            ArrayAdapter adapter = new ArrayAdapter<String>(getApplication(), android.R.layout.simple_list_item_1, pages_feed);
-                            pageFeedLV.setAdapter(adapter);
+
+//                            TextView pageName_tv = (TextView)findViewById(R.id.pageName);
+//                            pageName_tv.setText(pageName);
+//                            ArrayAdapter adapter = new ArrayAdapter<String>(getApplication(), android.R.layout.simple_list_item_1, pages_feed);
+//                            pageFeedLV.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     }
-                }
-        ).executeAsync();
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "about,description");
+        request.setParameters(parameters);
+        request.executeAsync();
 
     }
 }

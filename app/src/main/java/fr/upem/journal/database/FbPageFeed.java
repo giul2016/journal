@@ -6,20 +6,16 @@ import org.json.JSONObject;
 /**
  * Created by TTTH on 2/22/2016.
  */
-public class FbPage {
+public class FbPageFeed {
     String id;
-    String name;
+    String message;
     String created_time;
-    String description;
-    String about;
 
-    public FbPage(JSONObject object){
+    public FbPageFeed(JSONObject object){
         try {
-            this.name = object.getString("name");
+            this.message = object.getString("message");
             this.id = object.getString("id");
-            this.about = object.getString("about");
-            this.description = object.getString("description");
-            this.created_time = object.optString("created_time");
+            this.created_time = object.getString("created_time");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -29,9 +25,11 @@ public class FbPage {
         this.id = id;
     }
 
-    public void setName(String name){
-        this.name = name;
+
+    public void setMessage(String name){
+        this.message = message;
     }
+
 
     public void setCreated_time(String created_time){
         this.created_time = created_time;
@@ -41,13 +39,10 @@ public class FbPage {
         return id;
     }
 
-    public String getName(){
-        return name;
+    public String getMessage(){
+        return message;
     }
 
-    public String getAbout(){
-        return about;
-    }
 
     public String getCreated_time(){
         return created_time;
