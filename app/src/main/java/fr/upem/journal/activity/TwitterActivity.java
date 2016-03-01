@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import fr.upem.journal.R;
 import fr.upem.journal.adapter.TwitterPagerAdapter;
 import fr.upem.journal.service.TwitterFollowersService;
+
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterActivity extends AppCompatActivity {
@@ -252,5 +253,6 @@ public class TwitterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         authClient.onActivityResult(requestCode, resultCode, data);
+
     }
 }
