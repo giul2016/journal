@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -72,6 +75,8 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
     private ShareButton post_link_bttn;
     private LoginManager manager;
     private ShareDialog shareDialog;
+    private ImageView user_cover_photo;
+    private ProfilePictureView profilePictureView;
 
     public static FbInfoFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -123,6 +128,8 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fb_info, container, false);
 
+        profilePictureView = (ProfilePictureView) view.findViewById(R.id.picture);
+
         //region Init
 
         login_btn = (LoginButton) view.findViewById(R.id.login_button);
@@ -139,6 +146,7 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
         post_video_bttn = (ShareButton) view.findViewById(R.id.post_video_bttn);
         post_link_bttn = (ShareButton) view.findViewById(R.id.post_link_bttn);
         shareDialog = new ShareDialog(this);
+        user_cover_photo = (ImageView)view.findViewById(R.id.user_cover_photo);
 
         if (AccessToken.getCurrentAccessToken() == null) {
             name_tv.setText("You are not logged in. Please log in!");
@@ -304,8 +312,12 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
         if (AccessToken.getCurrentAccessToken() == null) {
             name_tv.setText("You are not logged in. Please log in!");
             post_photo_bttn.setVisibility(View.INVISIBLE);
+            post_video_bttn.setVisibility(View.INVISIBLE);
+            post_link_bttn.setVisibility(View.INVISIBLE);
         } else {
             post_photo_bttn.setVisibility(View.VISIBLE);
+            post_video_bttn.setVisibility(View.VISIBLE);
+            post_link_bttn.setVisibility(View.VISIBLE);
         }
         Log.e("+++ init info", "ok");
         GraphRequest request = GraphRequest.newMeRequest(
@@ -320,11 +332,11 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
                             String id = object.optString("id");
                             String name = object.optString("name");
                             String birthday = object.optString("birthday");
-                            Log.d("++respons ", response.toString());
-                            name_tv = (TextView) getView().findViewById(R.id.name);
-                            name_tv.setText("Hi " + name);
-                            ProfilePictureView profilePictureView = (ProfilePictureView) getView().findViewById(R.id.picture);
+//                            Log.d("++respons ", response.toString());
+//                            name_tv = (TextView) getView().findViewById(R.id.name);
+
                             profilePictureView.setProfileId(id);
+                            name_tv.setText("Hi " + name);
                         }
 
                     }

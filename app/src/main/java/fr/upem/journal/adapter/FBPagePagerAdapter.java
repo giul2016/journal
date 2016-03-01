@@ -32,14 +32,9 @@ public class FBPagePagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                // Top Rated fragment activity
                 return new FbPageFeedFragment();
             case 1:
-                // Games fragment activity
                 return new FbPageInfoFragment();
-            case 2:
-                // Movies fragment activity
-                return new FbInfoFragment();
         }
 
         return null;

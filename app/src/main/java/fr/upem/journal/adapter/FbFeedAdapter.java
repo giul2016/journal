@@ -44,9 +44,13 @@ public class FbFeedAdapter extends ArrayAdapter<FbPageFeed> {
         TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.page_created_time_tv);
         tvCreatedTime.setText(page.getCreated_time());
 
-        new DownloadImageTask((ImageView) convertView.findViewById(R.id.feed_picture_iv))
-                .execute(page.getPicture());
-        Log.e("+", page.getPicture());
+        if (page.getPicture()!=null){
+            new DownloadImageTask((ImageView) convertView.findViewById(R.id.feed_picture_iv))
+                    .execute(page.getPicture());
+            Log.e("+", page.getPicture());
+
+        }
+
         return convertView;
     }
 
