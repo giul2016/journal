@@ -3,6 +3,8 @@ package fr.upem.journal.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import fr.upem.journal.R;
+import fr.upem.journal.adapter.TwitterPagerAdapter;
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterActivity extends AppCompatActivity {
@@ -122,7 +125,7 @@ public class TwitterActivity extends AppCompatActivity {
                 Long  userid = session.getUserId();
 
 
-                textView.setText("Hi " + username);
+//                textView.setText("Hi " + username);
 
             }
 
@@ -131,6 +134,13 @@ public class TwitterActivity extends AppCompatActivity {
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
         });
+
+
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
+        viewPager.setAdapter(new TwitterPagerAdapter(getSupportFragmentManager(), TwitterActivity.this));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
+        tabLayout.setupWithViewPager(viewPager);
 
 
 
