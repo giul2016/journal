@@ -87,6 +87,10 @@
 
         <activity android:name=".activity.FbPage" />
         <activity android:name=".activity.FbComment"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f196f86b30b04f1c052c96263f02c2914fc70331" />
     </application>
 
 </manifest>
