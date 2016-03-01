@@ -70,16 +70,16 @@ public class FbPageFeedFragment extends android.support.v4.app.Fragment{
         String pageId = intent.getStringExtra("pageId");
         final String pageName = intent.getStringExtra("pageName");
 
-        new GraphRequest(
+        GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/"+pageId+"/feed",
-                null,
-                HttpMethod.GET,
+                "/" + pageId,
                 new GraphRequest.Callback() {
+                    @Override
                     public void onCompleted(GraphResponse response) {
                         try {
                             JSONObject object = response.getJSONObject();
-                            JSONArray array = object.getJSONArray("data");
+                            JSONObject feed = object.getJSONObject("feed");
+                            JSONArray array = feed.getJSONArray("data");
                             Log.e("ok;", array.toString());
                             ArrayList<String> pages_feed = new ArrayList<String>();
                             for (int i = 0; i < array.length(); i++) {
@@ -100,8 +100,13 @@ public class FbPageFeedFragment extends android.support.v4.app.Fragment{
 
 
                     }
-                }
-        ).executeAsync();
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "feed{full_picture,message,created_time}");
+        request.setParameters(parameters);
+        request.executeAsync();
+
 
 
 

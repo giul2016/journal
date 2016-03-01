@@ -103,7 +103,7 @@ public class FbPageInfoFragment extends android.support.v4.app.Fragment{
                         pageAbout_tv.setText(about);
                         String description = object.optString("description");
                         pageAbout_tv = (TextView)getActivity().findViewById(R.id.pageDescription);
-                        pageAbout_tv.setText(description);
+                        pageAbout_tv.setText(about);
                     }
                 });
 
