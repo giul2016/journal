@@ -5,14 +5,12 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.twitter.sdk.android.core.models.User;
-
 import fr.upem.journal.R;
 
 
-
 public class TwitterUserInfoFragment extends ListFragment {
+
     public static final String ARG_PAGE = "ARG_PAGE";
     private User user;
 
@@ -29,7 +27,6 @@ public class TwitterUserInfoFragment extends ListFragment {
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,5 +37,4 @@ public class TwitterUserInfoFragment extends ListFragment {
     public void setUser(User user){
         this.user = user;
     }
-    
 }
