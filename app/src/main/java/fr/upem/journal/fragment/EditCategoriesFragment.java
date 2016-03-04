@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import fr.upem.journal.R;
 import fr.upem.journal.database.DatabaseHelper;
+import fr.upem.journal.dialog.RemoveCategoryDialogFragment;
 import fr.upem.journal.newsfeed.NewsCategory;
 
 public class EditCategoriesFragment extends Fragment {
@@ -26,13 +27,14 @@ public class EditCategoriesFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> categoryTitles;
+    private DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_edit_categories, container, false);
 
         listView = (ListView) layout.findViewById(R.id.categorylistView);
-        DatabaseHelper databaseHelper = new DatabaseHelper(layout.getContext());
+        databaseHelper = new DatabaseHelper(layout.getContext());
         ArrayList<NewsCategory> newsCategories = databaseHelper.selectNewsCategories();
         databaseHelper.close();
         categoryTitles = new ArrayList<>();
@@ -46,6 +48,15 @@ public class EditCategoriesFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String categoryTitle = (String) listView.getItemAtPosition(position);
                 callback.onItemSelected(categoryTitle);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String categoryTitle = (String) listView.getItemAtPosition(position);
+                removeCategoryTitle(categoryTitle);
+                return true;
             }
         });
 
@@ -66,5 +77,17 @@ public class EditCategoriesFragment extends Fragment {
     public void addCategoryTitle(String categoryTitle) {
         categoryTitles.add(categoryTitle);
         adapter.notifyDataSetChanged();
+    }
+
+    public void removeCategoryTitle(String categoryTitle) {
+        categoryTitles.remove(categoryTitle);
+        adapter.notifyDataSetChanged();
+
+        NewsCategory newsCategory = new NewsCategory(categoryTitle);
+
+        if (!databaseHelper.removeNewsCategory(newsCategory)) {
+            addCategoryTitle(categoryTitle);
+        }
+        databaseHelper.close();
     }
 }
