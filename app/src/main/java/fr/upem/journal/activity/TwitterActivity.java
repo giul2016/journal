@@ -95,6 +95,11 @@ public class TwitterActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("USER_NAME","");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
@@ -118,8 +123,22 @@ public class TwitterActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.tv_username);
 
-        loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
+        if( session == null ) {
+            loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
 
+            callbackTwitterButton();
+        }
+        else{
+            findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
+        }
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
+        viewPager.setAdapter(new TwitterPagerAdapter(getSupportFragmentManager(), TwitterActivity.this));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void callbackTwitterButton() {
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -128,26 +147,16 @@ public class TwitterActivity extends AppCompatActivity {
                 String username = session.getUserName();
                 Long userid = session.getUserId();
 
-
-//                textView.setText("Hi " + username);
+                findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
 
             }
 
             @Override
             public void failure(TwitterException exception) {
+                findViewById(R.id.twitter_login_button).setVisibility(View.VISIBLE);
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
         });
-
-/*
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
-        viewPager.setAdapter(new TwitterPagerAdapter(getSupportFragmentManager(), TwitterActivity.this));
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
-        tabLayout.setupWithViewPager(viewPager);
-
-*/
-
     }
 
     @Override
@@ -193,6 +202,5 @@ public class TwitterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         loginButton.onActivityResult(requestCode, resultCode, data);
-
     }
 }

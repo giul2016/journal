@@ -1,7 +1,6 @@
 package fr.upem.journal.fragment;
 
 import android.app.ListActivity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,20 +16,16 @@ import android.widget.TextView;
 
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.GuestCallback;
 import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.User;
-import com.twitter.sdk.android.core.internal.*;
-import com.twitter.sdk.android.core.models.Search;
-import com.twitter.sdk.android.core.services.StatusesService;
 import com.twitter.sdk.android.tweetui.CompactTweetView;
+import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.twitter.sdk.android.tweetui.TweetViewFetchAdapter;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -38,10 +33,29 @@ import java.util.List;
 
 import fr.upem.journal.R;
 
-/**
- * Created by TTTH on 3/1/2016.
- */
 public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
+
+    private class TimelineActivity extends ListActivity {
+        private final String user;
+
+        TimelineActivity(String user){
+            this.user = user;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.fragment_twitter_user_info);
+
+            final UserTimeline userTimeline = new UserTimeline.Builder()
+                    .screenName(this.user)
+                    .build();
+            final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(this)
+                    .setTimeline(userTimeline)
+                    .build();
+            setListAdapter(adapter);
+        }
+    }
 
     private class TweetListActivity extends ListActivity {
 
@@ -75,12 +89,10 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
                 });
         }
     }
-
-
-    public final TweetListActivity tweetListActivity = new TweetListActivity();
     public static final String ARG_PAGE = "ARG_PAGE";
     private TextView userName_tv;
     private TwitterSession session;
+    private User user;
 
     public static TwitterUserInfoFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -90,26 +102,28 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
         return fragment;
     }
 
+    private void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            tweetListActivity.onCreate(savedInstanceState);
+            if(user == null){
+                throw new NullPointerException("User not instantiate");
+            }
+            new TimelineActivity(user.name).onCreate(savedInstanceState);
         }
         catch (Exception e){
 
         }
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_twitter_user_info, container, false);
-        userName_tv = (TextView) view.findViewById(R.id.twitter_userName_tv);
+       // userName_tv = (TextView) view.findViewById(R.id.twitter_userName_tv);
 
         init();
 
@@ -123,46 +137,29 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
     }
 
     public void init() {
-
         session = Twitter.getSessionManager().getActiveSession();
-        if (session != null) {
-            TwitterAuthToken authToken = session.getAuthToken();
-            //        Log.e("session", session.toString());
-            //        Log.e("auth tocken", authToken.toString());
-            String token = authToken.token;
-            String secret = authToken.secret;
-
-            Twitter.getApiClient(session).getAccountService().verifyCredentials(true, false, new Callback<User>() {
-
-                @Override
-                public void failure(TwitterException e) {
-
-                }
-
-                @Override
-                public void success(Result<User> userResult) {
-
-                    User user = userResult.data;
-                    String twitterImage = user.profileImageUrl;
-                    try {
-//                                Log.e("imageurl", user.profileImageUrl);
-//                                Log.e("name", user.name);
-//                                //Log.d("email",user.email);
-//                                Log.e("des", user.description);
-//                                Log.e("followers ", String.valueOf(user.followersCount));
-//                                Log.e("createdAt", user.createdAt);
-
-                        userName_tv.setText(user.name+" "+user.id);
-                        new DownloadImageTask((ImageView) getView().findViewById(R.id.twitter_user_picture_iv))
-                                .execute(user.profileImageUrl);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            });
+        if (session == null) {
+            return ;
         }
+        TwitterAuthToken authToken = session.getAuthToken();
+        getUserAccount();
     }
+
+    private void getUserAccount() {
+        Twitter.getApiClient(session).getAccountService().verifyCredentials(true, false, new Callback<User>() {
+            @Override
+            public void failure(TwitterException e) {
+
+            }
+
+            @Override
+            public void success(Result<User> userResult) {
+                setUser(userResult.data);
+            }
+
+        });
+    }
+
 
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

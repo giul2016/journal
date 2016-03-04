@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TableLayout
+
+<!--    <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <TableRow>
@@ -23,5 +24,19 @@
         </TableRow>
 
     </TableLayout>
+-->
+    <TextView android:id="@id/android:empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="No Tweets"/>
+
+    <ListView android:id="@id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#e1e8ed"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"/>
 
 </LinearLayout>
