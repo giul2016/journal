@@ -135,14 +135,14 @@ public class TwitterActivity extends AppCompatActivity {
             }
         });
 
-
+/*
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
         viewPager.setAdapter(new TwitterPagerAdapter(getSupportFragmentManager(), TwitterActivity.this));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
         tabLayout.setupWithViewPager(viewPager);
 
-
+*/
 
     }
 
