@@ -134,6 +134,7 @@ public class TwitterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig =  new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+
         Fabric.with(this, new Twitter(authConfig));
 
         setContentView(R.layout.activity_twitter);
@@ -153,7 +154,6 @@ public class TwitterActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
 
         textView = (TextView) findViewById(R.id.tv_username);
 
