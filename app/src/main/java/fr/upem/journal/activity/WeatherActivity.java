@@ -1,10 +1,9 @@
 package fr.upem.journal.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,41 +18,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
-import fr.upem.journal.newsfeed.NewsCategory;
-import fr.upem.journal.adapter.NewsFeedFragmentPagerAdapter;
 import fr.upem.journal.R;
-import fr.upem.journal.database.DatabaseHelper;
-import fr.upem.journal.service.NotificationService;
+import fr.upem.journal.adapter.NewsFeedFragmentPagerAdapter;
 
-public class NewsFeedActivity extends AppCompatActivity {
-
+/**
+ * Created by martine on 04/03/2016.
+ */
+public class WeatherActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private NewsFeedFragmentPagerAdapter adapter;
-
-    private static NewsFeedActivity nfa;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
-
-        if (isFirstTime()) {
-            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-            databaseHelper.initialData();
-        }
-
-        //launch notification service when the app is used
-        Intent serviceIntent = new Intent(this, NotificationService.class);
-        startService(serviceIntent);
+        setContentView(R.layout.activity_weather);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,39 +59,30 @@ public class NewsFeedActivity extends AppCompatActivity {
         drawerList = (ListView) findViewById(R.id.leftDrawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
 
-        adapter = new NewsFeedFragmentPagerAdapter(getSupportFragmentManager(), NewsFeedActivity.this,
-                loadDataFromDatabase());
-
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 Intent intent;
                 switch (position) {
                     case 0:
-                        // ALREADY SELECTED
-                        /*intent = new Intent(NewsFeedActivity.this, NewsFeedActivity.class);
-                        startActivity(intent);*/
+                        intent = new Intent(WeatherActivity.this, NewsFeedActivity.class);
+                        startActivity(intent);
                         break;
                     case 1:
-                        intent = new Intent(NewsFeedActivity.this, FacebookActivity.class);
+                        intent = new Intent(WeatherActivity.this, FacebookActivity.class);
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(NewsFeedActivity.this, TwitterActivity.class);
+                        intent = new Intent(WeatherActivity.this, TwitterActivity.class);
                         startActivity(intent);
                         break;
                     case 3:
-                        intent = new Intent(NewsFeedActivity.this, WeatherActivity.class);
-                        startActivity(intent);
+                        // ALREADY SELECTED
+                        /*intent = new Intent(WeatherActivity.this, WeatherActivity.class);
+                        startActivity(intent);*/
                         break;
                     case 4:
-                        intent = new Intent(NewsFeedActivity.this, SettingsActivity.class);
+                        intent = new Intent(WeatherActivity.this, SettingsActivity.class);
                         startActivity(intent);
                         break;
                 }
@@ -119,8 +91,6 @@ public class NewsFeedActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-        nfa = this;
     }
 
     @Override
@@ -160,30 +130,5 @@ public class NewsFeedActivity extends AppCompatActivity {
             default:
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private ArrayList<NewsCategory> loadDataFromDatabase() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if(preferences.getBoolean(getResources().getString(R.string.prefHideEmptyCatKey), true)) {
-            return databaseHelper.selectNewsCategoriesNotEmpty();
-        }
-        return databaseHelper.selectNewsCategories();
-    }
-
-    private boolean isFirstTime() {
-        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
-        if (preferences.getBoolean("first_time", true)) {
-            preferences.edit().putBoolean("first_time", false).apply();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void refresh (){
-        nfa.recreate();
     }
 }

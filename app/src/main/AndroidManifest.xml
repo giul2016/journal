@@ -26,7 +26,14 @@
         <activity
             android:name=".activity.TwitterActivity"
             android:label="@string/twitter" />
-        <activity android:name=".activity.SettingsActivity" />
+
+        <activity
+            android:name=".activity.WeatherActivity"
+            android:label="@string/weather">
+        </activity>
+        <activity android:name=".activity.SettingsActivity">
+        </activity>
+
         <activity
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".activity.NewsFeedActivity">

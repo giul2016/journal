@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import fr.upem.journal.R;
+import fr.upem.journal.newsfeed.NewsFeed;
 
 public class TwitterActivity extends AppCompatActivity {
 
@@ -23,7 +24,7 @@ public class TwitterActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
-    private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
+    private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +57,29 @@ public class TwitterActivity extends AppCompatActivity {
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 0) {
-                    Intent intent = new Intent(TwitterActivity.this, NewsFeedActivity.class);
-                    startActivity(intent);
-                } else if (position == 1) {
-                    Intent intent = new Intent(TwitterActivity.this, FacebookActivity.class);
-                    startActivity(intent);
-                } else if (position == 3) {
-                    Intent intent = new Intent(TwitterActivity.this, SettingsActivity.class);
-                    startActivity(intent);
+                Intent intent;
+                switch (position) {
+                    case 0:
+                        intent = new Intent(TwitterActivity.this, NewsFeedActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent = new Intent(TwitterActivity.this, FacebookActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        // ALREADY SELECTED
+                        /*intent = new Intent(TwitterActivity.this, TwitterActivity.class);
+                        startActivity(intent);*/
+                        break;
+                    case 3:
+                        intent = new Intent(TwitterActivity.this, WeatherActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 4:
+                        intent = new Intent(TwitterActivity.this, SettingsActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });
