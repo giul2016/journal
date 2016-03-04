@@ -3,6 +3,7 @@ package fr.upem.journal.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +24,7 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
@@ -39,8 +41,8 @@ public class TwitterActivity extends AppCompatActivity {
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
 
-    private static final String TWITTER_KEY = "DyAJEKsgPQ6L0is9rOlSzpWQb";
-    private static final String TWITTER_SECRET = "hsP2rm9qHhBhoXBJmQ23gQwjdFaafulPAzlPm84atc99cYP3KM";
+    public static final String TWITTER_KEY = "DyAJEKsgPQ6L0is9rOlSzpWQb";
+    public static final String TWITTER_SECRET = "hsP2rm9qHhBhoXBJmQ23gQwjdFaafulPAzlPm84atc99cYP3KM";
 
     private TwitterLoginButton loginButton;
     TextView textView;
@@ -96,8 +98,26 @@ public class TwitterActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("USER_NAME","");
+        super.onSaveInstanceState(outState);
+
+        if( session == null){
+            return ;
+        }
+
+        //Save ID and NAME in android's datas
+        outState.putLong("USER_ID",session.getUserId());
+        outState.putString("USER_NAME", session.getUserName());
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if( savedInstanceState != null && savedInstanceState.containsKey("USER_ID") && savedInstanceState.containsKey("USER_NAME") ){
+            findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
+            session = new TwitterSession(new TwitterAuthToken(TWITTER_KEY,TWITTER_SECRET), savedInstanceState.getLong("USER_ID"), savedInstanceState.getString("USER_NAME") );
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,19 +138,15 @@ public class TwitterActivity extends AppCompatActivity {
         drawerList = (ListView) findViewById(R.id.leftDrawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
 
+        itemClickListener();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         textView = (TextView) findViewById(R.id.tv_username);
 
-        if( session == null ) {
-            loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
-
-            callbackTwitterButton();
-        }
-        else{
-            findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
-        }
+        loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
+        callbackTwitterButton();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
         viewPager.setAdapter(new TwitterPagerAdapter(getSupportFragmentManager(), TwitterActivity.this));
@@ -143,12 +159,7 @@ public class TwitterActivity extends AppCompatActivity {
             @Override
             public void success(Result<TwitterSession> result) {
                 session = result.data;
-
-                String username = session.getUserName();
-                Long userid = session.getUserId();
-
                 findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
-
             }
 
             @Override
@@ -163,6 +174,11 @@ public class TwitterActivity extends AppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
+
+        if( savedInstanceState != null && savedInstanceState.containsKey("USER_ID") && savedInstanceState.containsKey("USER_NAME") ){
+            findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
+            session = new TwitterSession(new TwitterAuthToken(TWITTER_KEY,TWITTER_SECRET), savedInstanceState.getLong("USER_ID"), savedInstanceState.getString("USER_NAME") );
+        }
     }
 
     @Override

@@ -32,9 +32,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import fr.upem.journal.R;
+import fr.upem.journal.activity.TwitterActivity;
 
 public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
 
+    /**
+     * Class who take the username and get tweets
+     */
     private class TimelineActivity extends ListActivity {
         private final String user;
 
@@ -57,38 +61,6 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private class TweetListActivity extends ListActivity {
-
-        List<Long> tweetIds = Arrays.asList(503435417459249153L, 510908133917487104L, 473514864153870337L, 477788140900347904L);
-        final TweetViewFetchAdapter adapter =
-                new TweetViewFetchAdapter<CompactTweetView>(TweetListActivity.this);
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_twitter);
-                setListAdapter(adapter);
-                adapter.setTweetIds(tweetIds, new Callback<List<Tweet>>() {
-                    @Override
-                    public void success(Result<List<Tweet>> result) {
-                        String[] tweets = new String[result.data.size()];
-                        int count = 0;
-                        for(Tweet tweet : result.data){
-                            tweets[count] = tweet.toString();
-                        }
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(TweetListActivity.this,
-                                android.R.layout.simple_list_item_1, tweets);
-                        ((ListView) findViewById(R.id.leftDrawer)).setAdapter(adapter);
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        // Toast.makeText(...).show();
-                    }
-                });
-        }
-    }
     public static final String ARG_PAGE = "ARG_PAGE";
     private TextView userName_tv;
     private TwitterSession session;
@@ -109,14 +81,11 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            if(user == null){
-                throw new NullPointerException("User not instantiate");
-            }
-            new TimelineActivity(user.name).onCreate(savedInstanceState);
-        }
-        catch (Exception e){
 
+        //Retrieve the USER_ID and USER_NAME in data stocked by android
+        if( savedInstanceState != null && savedInstanceState.containsKey("USER_ID") && savedInstanceState.containsKey("USER_NAME") ){
+            session = new TwitterSession( new TwitterAuthToken( TwitterActivity.TWITTER_KEY , TwitterActivity.TWITTER_SECRET ), savedInstanceState.getLong("USER_ID"), savedInstanceState.getString("USER_NAME") );
+            new TimelineActivity(session.getUserName()).onCreate(savedInstanceState);
         }
     }
 
@@ -124,9 +93,7 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_twitter_user_info, container, false);
        // userName_tv = (TextView) view.findViewById(R.id.twitter_userName_tv);
-
         init();
-
         return view;
     }
 
@@ -141,27 +108,24 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
         if (session == null) {
             return ;
         }
-        TwitterAuthToken authToken = session.getAuthToken();
-        getUserAccount();
+
+        initUserAccount();
     }
 
-    private void getUserAccount() {
+    private void initUserAccount() {
         Twitter.getApiClient(session).getAccountService().verifyCredentials(true, false, new Callback<User>() {
             @Override
             public void failure(TwitterException e) {
-
             }
 
             @Override
             public void success(Result<User> userResult) {
                 setUser(userResult.data);
             }
-
         });
     }
 
-
-
+/*
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -186,7 +150,5 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
             bmImage.setImageBitmap(result);
         }
     }
-
-
-
+*/
 }
