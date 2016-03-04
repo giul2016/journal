@@ -180,6 +180,7 @@ public class TwitterActivity extends AppCompatActivity {
 
             @Override
             public void failure(TwitterException exception) {
+                findViewById(R.id.twitter_login_button).setVisibility(View.VISIBLE);
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
         });
@@ -250,6 +251,5 @@ public class TwitterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         authClient.onActivityResult(requestCode, resultCode, data);
-
     }
 }
