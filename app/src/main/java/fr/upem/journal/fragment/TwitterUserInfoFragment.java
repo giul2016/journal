@@ -95,7 +95,6 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         try {
             tweetListActivity.onCreate(savedInstanceState);
-
         }
         catch (Exception e){
 
@@ -153,7 +152,7 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
 //                                Log.e("followers ", String.valueOf(user.followersCount));
 //                                Log.e("createdAt", user.createdAt);
 
-                        userName_tv.setText(user.name);
+                        userName_tv.setText(user.name+" "+user.id);
                         new DownloadImageTask((ImageView) getView().findViewById(R.id.twitter_user_picture_iv))
                                 .execute(user.profileImageUrl);
                     } catch (Exception e) {
@@ -162,22 +161,6 @@ public class TwitterUserInfoFragment extends android.support.v4.app.Fragment {
                 }
 
             });
-            /*
-            TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(session);
-            StatusesService statusesService = twitterApiClient.getStatusesService();
-            statusesService.show(524971209851543553L, null, null, null, new Callback<Tweet>() {
-                @Override
-                public void success(Result<Tweet> result) {
-                    //Do something with result, which provides a Tweet inside of result.data
-                    userName_tv.setText(result.data.text);
-                }
-
-                public void failure(TwitterException exception) {
-                    //Do something on failure
-                }
-            });
-            */
-
         }
     }
 

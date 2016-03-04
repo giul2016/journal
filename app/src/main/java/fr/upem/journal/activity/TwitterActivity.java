@@ -46,20 +46,8 @@ public class TwitterActivity extends AppCompatActivity {
     TextView textView;
     TwitterSession session;
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig));
-
-        setContentView(R.layout.activity_twitter);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
+    private ActionBarDrawerToggle getDrawerToggle(){
+        return new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -72,12 +60,9 @@ public class TwitterActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
             }
         };
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.setDrawerListener(drawerToggle);
+    }
 
-        drawerList = (ListView) findViewById(R.id.leftDrawer);
-        drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
-
+    private void itemClickListener(){
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -107,10 +92,29 @@ public class TwitterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+
+        setContentView(R.layout.activity_twitter);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerToggle = getDrawerToggle();
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.setDrawerListener(drawerToggle);
+
+        drawerList = (ListView) findViewById(R.id.leftDrawer);
+        drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
 
         textView = (TextView) findViewById(R.id.tv_username);
 
@@ -122,7 +126,7 @@ public class TwitterActivity extends AppCompatActivity {
                 session = result.data;
 
                 String username = session.getUserName();
-                Long  userid = session.getUserId();
+                Long userid = session.getUserId();
 
 
 //                textView.setText("Hi " + username);
