@@ -44,7 +44,7 @@ public class NotificationService extends IntentService {
         Calendar nextFiringCalendar = getNextFiringCalendar();
         alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
 
-        Log.d("ALARM", "Next alarm set to "+nextFiringCalendar.get(Calendar.HOUR)+"h ("+nextFiringCalendar.getTimeInMillis()+")" );
+        Log.d("ALARM", "Next alarm set to "+nextFiringCalendar.get(Calendar.HOUR_OF_DAY)+"h ("+nextFiringCalendar.getTimeInMillis()+")" );
     }
 
     private Calendar getNextFiringCalendar() {
@@ -53,26 +53,26 @@ public class NotificationService extends IntentService {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        Log.d("ALARM", "current hour : "+currentCalendar.get(Calendar.HOUR)+":"+currentCalendar.get(Calendar.MINUTE)+":"+currentCalendar.get(Calendar.SECOND));
+        Log.d("ALARM", "current hour : "+currentCalendar.get(Calendar.HOUR_OF_DAY)+":"+currentCalendar.get(Calendar.MINUTE)+":"+currentCalendar.get(Calendar.SECOND));
 
         Collections.sort(notificationHours);
 
         for(int hour : notificationHours) {
             Log.d("ALARM", "hour : "+hour);
-            calendar.set(Calendar.HOUR, hour);
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
             Log.d("ALARM", calendar.getTimeInMillis()+" > "+currentCalendar.getTimeInMillis());
             if(calendar.getTimeInMillis() > currentCalendar.getTimeInMillis()) {
-                Log.d("ALARM", "next hour : " + calendar.get(Calendar.HOUR) + " ("+hour+" - "+calendar.getTimeInMillis()+")");
+                Log.d("ALARM", "next hour : " + calendar.get(Calendar.HOUR_OF_DAY) + " ("+calendar.getTimeInMillis()+")");
                 return calendar;
             }
         }
 
         // if no next hour found, calendar is set to first hour on the next day
-        currentCalendar.set(Calendar.HOUR, notificationHours.get(0));
+        currentCalendar.set(Calendar.HOUR_OF_DAY, notificationHours.get(0));
         currentCalendar.set(Calendar.MINUTE, 0);
         currentCalendar.set(Calendar.SECOND, 0);
         currentCalendar.add(Calendar.DAY_OF_MONTH, 1);
-        Log.d("ALARM", "no next hour found, set to : " + currentCalendar.get(Calendar.HOUR)+ " ("+currentCalendar.getTimeInMillis()+")");
+        Log.d("ALARM", "no next hour found, set to : " + currentCalendar.get(Calendar.HOUR_OF_DAY)+ " ("+currentCalendar.getTimeInMillis()+")");
         return currentCalendar;
     }
 }

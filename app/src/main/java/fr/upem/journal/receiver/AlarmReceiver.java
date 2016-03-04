@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import fr.upem.journal.service.NotificationService;
+
 public class AlarmReceiver extends BroadcastReceiver {
     public AlarmReceiver() {
     }
@@ -23,5 +25,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         notificationManager.notify(intent.getIntExtra("id", 1), builder.build());
+
+        // start service to set the next alarm
+        Intent serviceIntent = new Intent(context, NotificationService.class);
+        context.startService(serviceIntent);
     }
 }
