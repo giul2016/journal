@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.twitter.sdk.android.core.models.User;
 import fr.upem.journal.R;
+import fr.upem.journal.activity.TwitterActivity;
 
 
 public class TwitterUserInfoFragment extends ListFragment {
-
     public static final String ARG_PAGE = "ARG_PAGE";
     private User user;
 
@@ -36,4 +36,5 @@ public class TwitterUserInfoFragment extends ListFragment {
     public void setUser(User user){
         this.user = user;
     }
+
 }
