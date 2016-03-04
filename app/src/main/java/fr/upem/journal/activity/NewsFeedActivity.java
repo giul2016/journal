@@ -47,11 +47,11 @@ public class NewsFeedActivity extends AppCompatActivity {
         if (isFirstTime()) {
             DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
             databaseHelper.initialData();
-
-            //launch notification service the first time the app is used
-            Intent serviceIntent = new Intent(this, NotificationService.class);
-            startService(serviceIntent);
         }
+
+        //launch notification service when the app is used
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        startService(serviceIntent);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
