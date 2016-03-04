@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.service.NotificationService;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -20,7 +21,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentTitle("Journal")
                 .setContentText("You have news to read !");
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        Intent notificationIntent = new Intent(context, NewsFeedActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         builder.setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
