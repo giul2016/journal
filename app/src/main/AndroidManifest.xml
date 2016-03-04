@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="fr.upem.journal"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fr.upem.journal">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -15,36 +16,42 @@
             android:label="@string/title_activity_news"
             android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WebActivity">
-        </activity>
+        <activity android:name=".activity.WebActivity" />
         <activity
             android:name=".activity.FacebookActivity"
-            android:label="@string/facebook">
-        </activity>
+            android:label="@string/facebook" />
         <activity
             android:name=".activity.TwitterActivity"
-            android:label="@string/twitter">
-        </activity>
-        <activity android:name=".activity.SettingsActivity">
-        </activity>
+            android:label="@string/twitter" />
+        <activity android:name=".activity.SettingsActivity" />
         <activity
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".activity.NewsFeedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.NewsFeedActivity"/>
+                android:value=".activity.NewsFeedActivity" />
         </activity>
-        <activity android:name=".activity.EditCategoriesActivity">
-        </activity>
-        <activity android:name=".activity.EditNewsFeedsActivity">
-        </activity>
-        <activity android:name=".activity.AddNewCategoryActivity">
-        </activity>
+        <activity android:name=".activity.EditCategoriesActivity" />
+        <activity android:name=".activity.EditNewsFeedsActivity" />
+        <activity android:name=".activity.AddNewCategoryActivity" />
+
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
