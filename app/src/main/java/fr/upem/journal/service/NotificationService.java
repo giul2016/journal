@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.upem.journal.R;
 import fr.upem.journal.receiver.AlarmReceiver;
@@ -29,8 +31,6 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
         intent.putExtra("id", nextNotificationId++);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
@@ -40,11 +40,17 @@ public class NotificationService extends IntentService {
         // cancel the previous alarm set
         alarmManager.cancel(pendingIntent);
 
-        if(preferences.getBoolean(getResources().getString(R.string.prefNotificationActiveKey), true)) {
-            Calendar nextFiringCalendar = getNextFiringCalendar();
-            alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            Log.d("ALARM", "Next alarm set to " + nextFiringCalendar.get(Calendar.HOUR_OF_DAY) + "h (" + nextFiringCalendar.getTimeInMillis() + ")");
+        if(preferences.getBoolean(getResources().getString(R.string.prefNotificationActiveKey), true)) {
+            try {
+                Calendar nextFiringCalendar = getNextFiringCalendar();
+                alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
+
+                Log.d("ALARM", "Next alarm set to " + nextFiringCalendar.get(Calendar.HOUR_OF_DAY) + "h (" + nextFiringCalendar.getTimeInMillis() + ")");
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         } else {
             Log.d("ALARM", "notification not active");
         }
@@ -58,9 +64,11 @@ public class NotificationService extends IntentService {
 
         Log.d("ALARM", "current hour : " + currentCalendar.get(Calendar.HOUR_OF_DAY) + ":" + currentCalendar.get(Calendar.MINUTE) + ":" + currentCalendar.get(Calendar.SECOND));
 
-        ArrayList<Integer> notificationHours;
-        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
-        try {
+        ArrayList<Integer> notificationHours = new ArrayList<>();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> hours = preferences.getStringSet(getResources().getString(R.string.prefNotificationHoursKey), new HashSet<>(Arrays.asList("8", "12", "20")));
+
+        /*try {
             notificationHours = (ArrayList<Integer>) ObjectSerializer.deserialize(
                     preferences.getString(
                             "notification_hours",
@@ -69,6 +77,9 @@ public class NotificationService extends IntentService {
             );
         } catch (Exception e) {
             notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
+        }*/
+        for(String hour : hours) {
+            notificationHours.add(Integer.parseInt(hour));
         }
         Collections.sort(notificationHours);
 
@@ -80,6 +91,9 @@ public class NotificationService extends IntentService {
                 Log.d("ALARM", "next hour : " + calendar.get(Calendar.HOUR_OF_DAY) + " ("+calendar.getTimeInMillis()+")");
                 return calendar;
             }
+        }
+        if(notificationHours.isEmpty()) {
+            throw new IllegalStateException("Notification hours list is empty");
         }
 
         // if no next hour found, calendar is set to first hour on the next day

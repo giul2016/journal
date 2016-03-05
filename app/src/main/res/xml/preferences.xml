@@ -10,6 +10,12 @@
             android:key="@string/prefNotificationActiveKey"
             android:title="@string/prefNotificationsTitle"/>
 
+        <MultiSelectListPreference
+            android:key="@string/prefNotificationHoursKey"
+            android:title="Notification hours"
+            android:entries="@array/notificationHoursEntries"
+            android:entryValues="@array/notificationHoursValues" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
