@@ -31,7 +31,7 @@ import fr.upem.journal.database.FbPage;
 /**
  * Created by TTTH on 2/22/2016.
  */
-public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
+public class FbLikedPagesFragment extends android.support.v4.app.Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private CallbackManager callbackManager;
@@ -74,15 +74,12 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
     }
 //region Functions
 
-    private void getLikedPages(){
-        Log.e("+++ get pages", "ok");
+    private void getLikedPages() {
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(final JSONObject object, GraphResponse response) {
-                        // Application code
-//                        Log.e("GraphResponse", response.toString());
 
                         GraphRequest likeRequest = GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(),
                                 "/me/likes/",
@@ -91,28 +88,22 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
                                     public void onCompleted(GraphResponse response) {
 
                                         try {
-//                                            Intent intent = new Intent(MainActivity.this,PagesList.class);
-                                            Log.d("GraphLikeResponse", "Likes:- " + response.toString());
                                             JSONObject object = response.getJSONObject();
                                             JSONArray array = new JSONArray();
 
-                                            if(object != null) {
+                                            if (object != null) {
                                                 array = object.getJSONArray("data");
                                             }
-//                                            intent.putExtra("jsonPagesData",array.toString());
-//                                            startActivity(intent);
-                                            Log.e("GraphObject", "Likes:- " + array.toString());
                                             ArrayList<String> pages_list = new ArrayList<String>();
 
-                                            for (int i=0; i<array.length();i++){
-//                                                Log.e("+ name : ", ((JSONObject) array.get(i)).optString("name"));
+                                            for (int i = 0; i < array.length(); i++) {
                                                 pages_list.add(((JSONObject) array.get(i)).optString("name"));
                                                 facebookPage.add(new FbPage((JSONObject) array.get(i)));
 
                                             }
 //                                            ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, pages_list);
-                                            pagesList = (ListView)getView().findViewById(R.id.listView);
-                                            PageAdapter adapter = new PageAdapter(getContext(),facebookPage);
+                                            pagesList = (ListView) getView().findViewById(R.id.listView);
+                                            PageAdapter adapter = new PageAdapter(getContext(), facebookPage);
                                             pagesList.setAdapter(adapter);
                                             pagesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 @Override
@@ -120,8 +111,8 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment{
 
 //                                                    Intent newIntent = new Intent(getActivity(),FbPageFeed.class);
                                                     Intent newIntent = new Intent(getActivity(), fr.upem.journal.activity.FbPage.class);
-                                                    newIntent.putExtra("pageId",facebookPage.get(position).getID());
-                                                    newIntent.putExtra("pageName",facebookPage.get(position).getName());
+                                                    newIntent.putExtra("pageId", facebookPage.get(position).getID());
+                                                    newIntent.putExtra("pageName", facebookPage.get(position).getName());
                                                     startActivity(newIntent);
 
                                                 }

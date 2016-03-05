@@ -20,11 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WebActivity"></activity>
+        <activity android:name=".activity.WebActivity" />
         <activity
             android:name=".activity.TwitterActivity"
-            android:label="@string/twitter"></activity>
-        <activity android:name=".activity.SettingsActivity"></activity>
+            android:label="@string/twitter" />
+        <activity android:name=".activity.SettingsActivity" />
         <activity
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".activity.NewsFeedActivity">
@@ -32,12 +32,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.NewsFeedActivity" />
         </activity>
-        <activity android:name=".activity.EditCategoriesActivity"></activity>
-        <activity android:name=".activity.EditNewsFeedsActivity"></activity>
-        <activity android:name=".activity.AddNewCategoryActivity"></activity>
+        <activity android:name=".activity.EditCategoriesActivity" />
+        <activity android:name=".activity.EditNewsFeedsActivity" />
+        <activity android:name=".activity.AddNewCategoryActivity" />
         <activity
             android:name=".activity.FacebookActivity"
-            android:label="@string/facebook"></activity>
+            android:label="@string/facebook" />
         <activity android:name=".activity.FbPageFeed" />
 
         <meta-data
@@ -55,7 +55,8 @@
             android:authorities="com.facebook.app.FacebookContentProvider185863238451126"
             android:exported="true" />
 
-        <activity android:name=".activity.FbPage"></activity>
+        <activity android:name=".activity.FbPage" />
+        <activity android:name=".activity.FbComment"></activity>
     </application>
 
 </manifest>

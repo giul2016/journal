@@ -15,7 +15,7 @@ import fr.upem.journal.fragment.FbPageInfoFragment;
  */
 public class FBPagePagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Feed", "Page Info"};
+    private String tabTitles[] = new String[]{"Feed", "Page Info"};
     private Context context;
 
     public FBPagePagerAdapter(FragmentManager fm, Context context) {

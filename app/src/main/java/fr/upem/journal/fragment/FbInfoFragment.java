@@ -104,7 +104,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
             if (requestCode == 10) {
                 Uri selectedImageUri = data.getData();
                 String selectedImagePath = getRealPathFromURI(selectedImageUri);
-                Log.e("abc", selectedImagePath);
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
                     publishImage(bitmap);
@@ -114,7 +113,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
             } else if (requestCode == 20) {
                 Uri selectedVideoUri = data.getData();
                 String selectedVideoPath = getRealPathFromURI(selectedVideoUri);
-                Log.e("abc", selectedVideoPath.toString());
                 publishVideo(selectedVideoPath.toString());
             }
         }
@@ -161,14 +159,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
         post_photo_bttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                    Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.images);
-//                    SharePhoto photo = new SharePhoto.Builder()
-//                            .setBitmap(img)
-//                            .build();
-//                    SharePhotoContent content = new SharePhotoContent.Builder()
-//                            .addPhoto(photo)
-//                            .build();
-//                    shareDialog.show(content);
 
                 if (Build.VERSION.SDK_INT <= 19) {
                     Intent i = new Intent();
@@ -266,18 +256,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
 
     //region post photo
     private void publishImage(Bitmap img) {
-//        Bitmap image = BitmapFactory.decodeResource(getResources(), images);
-//
-//        SharePhoto photo = new SharePhoto.Builder()
-//                .setBitmap(image)
-//                .setCaption(status_txt)
-//                .build();
-//
-//        SharePhotoContent content = new SharePhotoContent.Builder()
-//                .addPhoto(photo)
-//                .build();
-//
-//        ShareApi.share(content, null);
         SharePhoto photo = new SharePhoto.Builder()
                 .setBitmap(img)
                 .build();
@@ -293,7 +271,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
     //region post video
     private void publishVideo(String videoUrl) {
         Uri videoFileUri = Uri.parse("file://" + videoUrl);
-        Log.e("publish video", "ok");
         ShareVideo video = new ShareVideo.Builder()
                 .setLocalUrl(videoFileUri)
                 .build();
@@ -301,7 +278,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
         ShareVideoContent content = new ShareVideoContent.Builder()
                 .setVideo(video)
                 .build();
-        Log.e("abc", videoUrl.toString());
         shareDialog.show(content);
     }
 
@@ -325,15 +301,11 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        // Application code
-//                        Log.e("GraphResponse", response.toString());
                         object = response.getJSONObject();
                         if (object != null) {
                             String id = object.optString("id");
                             String name = object.optString("name");
                             String birthday = object.optString("birthday");
-//                            Log.d("++respons ", response.toString());
-//                            name_tv = (TextView) getView().findViewById(R.id.name);
 
                             profilePictureView.setProfileId(id);
                             name_tv.setText("Hi " + name);

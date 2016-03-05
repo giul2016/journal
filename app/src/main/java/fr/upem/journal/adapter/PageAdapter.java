@@ -30,8 +30,8 @@ public class PageAdapter extends ArrayAdapter<FbPage> {
         }
 
         TextView tvName = (TextView) convertView.findViewById(R.id.page_name_tv);
-        ProfilePictureView pagePicture = (ProfilePictureView)convertView.findViewById(R.id.pageItemPicture);
-         tvName.setText(page.getName());
+        ProfilePictureView pagePicture = (ProfilePictureView) convertView.findViewById(R.id.pageItemPicture);
+        tvName.setText(page.getName());
         pagePicture.setProfileId(page.getID());
         return convertView;
     }

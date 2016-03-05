@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TableRow>
+
+            <com.facebook.login.widget.ProfilePictureView
+                android:id="@+id/user_comment_picture"
+                android:layout_height="40dp"
+                android:layout_gravity="left" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:id="@+id/fb_user_name"
+                android:textSize="8pt"
+                android:textColor="@color/com_facebook_button_background_color"/>
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/user_feed_comment_created_tv"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/user_feed_comment_mess_tv"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textSize="8pt"/>
+        </TableRow>
+
+        <TableRow>
+
+            <EditText
+                android:id="@+id/user_feed_comment_et"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/send_user_comment"
+                android:text="Send"/>
+        </TableRow>
+
+        <View
+            android:layout_height="2dip"
+            android:background="#FF909090" />
+    </TableLayout>
+</LinearLayout>

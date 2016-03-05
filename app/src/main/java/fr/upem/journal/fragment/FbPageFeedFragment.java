@@ -80,19 +80,15 @@ public class FbPageFeedFragment extends android.support.v4.app.Fragment{
                             JSONObject object = response.getJSONObject();
                             JSONObject feed = object.getJSONObject("feed");
                             JSONArray array = feed.getJSONArray("data");
-                            Log.e("ok;", array.toString());
                             ArrayList<String> pages_feed = new ArrayList<String>();
                             for (int i = 0; i < array.length(); i++) {
-                                Log.e("+ feed : ", ((JSONObject) array.get(i)).optString("created_time"));
                                 pages_feed.add(((JSONObject) array.get(i)).optString("message"));
 
                                 facebookPage.add(new FbPageFeed((JSONObject) array.get(i)));
 
                             }
-//                            pageName_tv = (TextView)view.findViewById(R.id.pageName);
-//                            pageName_tv.setText(pageName);
                             FbFeedAdapter adapter = new FbFeedAdapter(getContext(),facebookPage);
-//                            ArrayAdapter adapter = new ArrayAdapter<String>(getActivity().getApplication(), android.R.layout.simple_list_item_1, pages_feed);
+
                             pageFeedLV.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();

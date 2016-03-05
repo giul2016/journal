@@ -35,34 +35,28 @@ public class FbPageFeed extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fb_page_feed);
-        pageFeedLV = (ListView)findViewById(R.id.pageFeedLV);
+        pageFeedLV = (ListView) findViewById(R.id.pageFeedLV);
         Intent intent = getIntent();
         String pageId = intent.getStringExtra("pageId");
         final String pageName = intent.getStringExtra("pageName");
 
 
+        //region get Feed
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/"+pageId+"/feed",
+                "/" + pageId + "/feed",
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
-                        Log.e("page+++++",response.toString());
                         JSONObject object = response.getJSONObject();
                         try {
                             JSONArray array = object.getJSONArray("data");
                             ArrayList<String> pages_feed = new ArrayList<String>();
                             for (int i = 0; i < array.length(); i++) {
-//                                Log.e("+ feed : ", ((JSONObject) array.get(i)).optString("message"));
                                 pages_feed.add(((JSONObject) array.get(i)).optString("message"));
-//                                facebookPageFeed.add(new fr.upem.journal.database.FbPageFeed((JSONObject) array.get(i)));
 
                             }
 
-//                            TextView pageName_tv = (TextView)findViewById(R.id.pageName);
-//                            pageName_tv.setText(pageName);
-//                            ArrayAdapter adapter = new ArrayAdapter<String>(getApplication(), android.R.layout.simple_list_item_1, pages_feed);
-//                            pageFeedLV.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -74,5 +68,8 @@ public class FbPageFeed extends Activity {
         request.setParameters(parameters);
         request.executeAsync();
 
+        //endregion get Feed
     }
+
+
 }

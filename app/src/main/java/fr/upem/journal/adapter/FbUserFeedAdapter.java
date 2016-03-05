@@ -1,6 +1,7 @@
 package fr.upem.journal.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -13,9 +14,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
+import fr.upem.journal.activity.FbComment;
 import fr.upem.journal.database.FbPageFeed;
 import fr.upem.journal.database.FbUserFeed;
 
@@ -46,66 +50,70 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
     }
 
 
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        FbUserFeed feed = getItem(position);
+    public View getView(final int position, View convertView, ViewGroup parent) {
+
+
+        final FbUserFeed feed = getItem(position);
         if (convertView == null) {
+
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_user_feed_fb, parent, false);
+
         }
+        convertView.setTag(position);
 
-//        Log.e("xxxx", feed.getCreated_time());
+
         TextView tvMess = (TextView) convertView.findViewById(R.id.user_feed_message_tv);
-        if (feed.getMessage()!=null){
-//            Log.e("+++", feed.getMessage());
+        if (feed.getMessage() != null) {
             tvMess.setText(feed.getMessage());
-        }else tvMess.setText("");
+        } else tvMess.setText("");
         TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.user_feed_created_time_tv);
-        if (feed.getMessage()!=null){
-//            Log.e("+++", feed.getCreated_time());
+        if (feed.getMessage() != null) {
             tvCreatedTime.setText(feed.getCreated_time());
-        }else tvCreatedTime.setText("");
+        } else tvCreatedTime.setText("");
 
 
-        if (feed.getPicture()!=null){
-//            Log.e("+++", feed.getPicture());
-            new DownloadImageTask((ImageView) convertView.findViewById(R.id.user_feed_picture_iv))
-                    .execute(feed.getPicture());
+        ImageView picture = (ImageView) convertView.findViewById(R.id.user_feed_picture_iv);
+        if (feed.getPicture() != null) {
+            Glide.with(getContext())
+                    .load(feed.getPicture())
+                    .into(picture);
         }
 
         tvTotalLike = (TextView) convertView.findViewById(R.id.user_feed_total_like_tv);
-        tvTotalLike.setText("0 like");
         tvTotalComment = (TextView) convertView.findViewById(R.id.user_feed_total_comment_tv);
-        tvTotalComment.setText("0 comment");
+        tvTotalComment.setTag(position);
 
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/"+feed.getID(),
+                "/" + feed.getID(),
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
                         try {
                             JSONObject object = response.getJSONObject();
-                            if (object!=null) {
+                            if (object != null) {
                                 JSONObject feed1 = object.getJSONObject("likes");
 
-                            JSONArray array1 = feed1.getJSONArray("data");
-                                Log.e("===", array1.toString());
-//                                tvTotalLike.setText(array.length());
-                                tvTotalLike.setText(String.valueOf(array1.length()) + "likes");
-                            }
+                                JSONArray array1 = feed1.getJSONArray("data");
+                                tvTotalLike.setText(String.valueOf(array1.length()) + " ");
+                            } else
+                                tvTotalLike.setText(" 0" );
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         try {
                             JSONObject object = response.getJSONObject();
-                            if (object!=null) {
+                            if (object != null) {
                                 JSONObject feed2 = object.getJSONObject("comments");
 
                                 JSONArray array2 = feed2.getJSONArray("data");
-                                Log.e("===", array2.toString());
-//                                tvTotalLike.setText(array.length());
-                                tvTotalLike.setText(String.valueOf(array2.length()) + "comments");
+                                tvTotalComment.setText(String.valueOf(array2.length()) + " comments");
+
+                            }else {
+                                tvTotalComment.setText(" 0 comment");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -117,35 +125,23 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         parameters.putString("fields", "likes,comments");
         request.setParameters(parameters);
         request.executeAsync();
+        tvTotalComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.e("abc", String.valueOf(v.getTag()));
+                Log.e("abc", feed.getID()+feed.getMessage());
+                Intent intent = new Intent(getContext(), FbComment.class);
+                intent.putExtra("feedId", feed.getID());
+                getContext().startActivity(intent);
+            }
+        });
+
+
 
         return convertView;
     }
 
 
 
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 }

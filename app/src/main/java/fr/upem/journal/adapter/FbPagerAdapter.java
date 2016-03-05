@@ -14,7 +14,7 @@ import fr.upem.journal.fragment.FbUserFeedFreagment;
  */
 public class FbPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Feed","Liked pages", "Info"};
+    private String tabTitles[] = new String[]{"Feed", "Liked pages", "Info"};
     private Context context;
 
     public FbPagerAdapter(FragmentManager fm, Context context) {
@@ -34,7 +34,7 @@ public class FbPagerAdapter extends FragmentPagerAdapter {
                 return new FbUserFeedFreagment();
             case 1:
                 return new FbLikedPagesFragment();
-            case  2:
+            case 2:
                 return new FbInfoFragment();
         }
 

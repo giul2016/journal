@@ -24,10 +24,12 @@ public class FbPage extends AppCompatActivity {
         setContentView(R.layout.fb_page);
 
 
+        //region Fragment
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_page);
         viewPager.setAdapter(new FBPagePagerAdapter(getSupportFragmentManager(), FbPage.this));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_page);
         tabLayout.setupWithViewPager(viewPager);
+        //endregion Fragment
 
     }
 }

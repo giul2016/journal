@@ -61,6 +61,7 @@ public class FacebookActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_facebook);
 
+
         // region Left toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,11 +106,13 @@ public class FacebookActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         // endregion left toolbar
 
+
+        //region Fragment
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new FbPagerAdapter(getSupportFragmentManager(), FacebookActivity.this));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
+        //endregion Fragment
 
     }
 
@@ -157,7 +160,7 @@ public class FacebookActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }

@@ -96,9 +96,7 @@ public class FbPageInfoFragment extends android.support.v4.app.Fragment{
                     @Override
                     public void onCompleted(GraphResponse response) {
                         JSONObject object = response.getJSONObject();
-                        Log.e("page about", response.toString());
                         String about = object.optString("about");
-                        Log.e("page about", about);
                         pageAbout_tv = (TextView)getActivity().findViewById(R.id.pageAbout);
                         pageAbout_tv.setText(about);
                         String description = object.optString("description");
