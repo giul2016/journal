@@ -64,33 +64,47 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         convertView.setTag(position);
 
 
+        //region init
         TextView tvMess = (TextView) convertView.findViewById(R.id.user_feed_message_tv);
-        if (feed.getMessage() != null) {
-            tvMess.setText(feed.getMessage());
-        } else tvMess.setText("");
-        TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.user_feed_created_time_tv);
-        if (feed.getMessage() != null) {
-            tvCreatedTime.setText(feed.getCreated_time());
-        } else tvCreatedTime.setText("");
-
-
         ImageView picture = (ImageView) convertView.findViewById(R.id.user_feed_picture_iv);
-        if (feed.getPicture() != null) {
+        tvTotalLike = (TextView) convertView.findViewById(R.id.user_feed_total_like_tv);
+        tvTotalComment = (TextView) convertView.findViewById(R.id.user_feed_total_comment_tv);
+        tvTotalComment.setTag(position);
+        TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.user_feed_created_time_tv);
+
+        //endregion init
+
+        //region get mess, photo,..
+        if (feed.getLink() != null) {
+            Glide.with(getContext())
+                    .load(feed.getLink())
+                    .into(picture);
+            tvMess.setText(feed.getLink());
+        }
+        if ((feed.getPicture() != null) & (feed.getPicture() != " ")) {
             Glide.with(getContext())
                     .load(feed.getPicture())
                     .into(picture);
         }
+        if ((feed.getMessage() != null) & (feed.getMessage() != " ")) {
+            tvMess.setText(feed.getMessage());
+        } else tvMess.setText("");
 
-        tvTotalLike = (TextView) convertView.findViewById(R.id.user_feed_total_like_tv);
-        tvTotalComment = (TextView) convertView.findViewById(R.id.user_feed_total_comment_tv);
-        tvTotalComment.setTag(position);
+        if (feed.getMessage() != null) {
+            tvCreatedTime.setText(feed.getCreated_time());
+        } else tvCreatedTime.setText("");
+        //endregion get mess, photo,..
 
+
+        //region get Comments, Likes
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + feed.getID(),
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
+
+                        //region get Likes
                         try {
                             JSONObject object = response.getJSONObject();
                             if (object != null) {
@@ -103,7 +117,9 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        //endregion get Likes
 
+                        //region get Comments
                         try {
                             JSONObject object = response.getJSONObject();
                             if (object != null) {
@@ -118,6 +134,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        //endregion get Comments
                     }
                 });
 
@@ -125,6 +142,9 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         parameters.putString("fields", "likes,comments");
         request.setParameters(parameters);
         request.executeAsync();
+        //endregion get Comments, Likes
+
+        //region view Comments
         tvTotalComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +156,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                 getContext().startActivity(intent);
             }
         });
-
+        //endregion view Comments
 
 
         return convertView;

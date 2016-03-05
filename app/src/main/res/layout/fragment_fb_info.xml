@@ -35,13 +35,11 @@
             android:layout_gravity="center">
         </com.facebook.login.widget.ProfilePictureView>
     </TableRow>
+
     <TableRow>
-        <ImageView android:id="@+id/user_cover_photo"/>
-    </TableRow>
-    <TableRow>
-        <com.facebook.share.widget.ShareButton android:id="@+id/post_photo_bttn" android:text="Share photo" />
-        <com.facebook.share.widget.ShareButton android:id="@+id/post_video_bttn" android:text="Share video" />
-        <com.facebook.share.widget.ShareButton android:id="@+id/post_link_bttn" android:text="Share link"/>
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_photo_bttn" android:text="@string/fb_share_photo" />
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_video_bttn" android:text="@string/fb_share_video" />
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_link_bttn" android:text="@string/fb_share_link"/>
     </TableRow>
     <TableRow>
         <ListView

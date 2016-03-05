@@ -50,28 +50,33 @@ public class FbFeedAdapter extends ArrayAdapter<FbPageFeed> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_fb_feed, parent, false);
         }
 
-        TextView tvMess = (TextView) convertView.findViewById(R.id.page_message_tv);
-        TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.page_created_time_tv);
+        //region init
+        final TextView tvMess = (TextView) convertView.findViewById(R.id.page_message_tv);
+        final TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.page_created_time_tv);
         final TextView tvTotalLike = (TextView) convertView.findViewById(R.id.page_feed_total_like_tv);
         final TextView tvTotalComment = (TextView) convertView.findViewById(R.id.page_feed_total_comment_tv);
-        ImageView picture = (ImageView) convertView.findViewById(R.id.feed_picture_iv);
+        final ImageView picture = (ImageView) convertView.findViewById(R.id.feed_picture_iv);
+        //endregion init
 
+        //region get Mess, photo,..
         tvMess.setText(page.getMessage());
         tvCreatedTime.setText(page.getCreated_time());
-
-
         if (page.getPicture() != null) {
             Glide.with(getContext())
                     .load(page.getPicture())
                     .into(picture);
         }
+        //endregion get Mess, photo,..
 
+        //region get Likes, Comments
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + page.getID(),
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
+
+                        //region get Likes
                         try {
                             JSONObject object = response.getJSONObject();
                             if (object != null) {
@@ -86,6 +91,10 @@ public class FbFeedAdapter extends ArrayAdapter<FbPageFeed> {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        //endregion getLikes
+
+                        //region get Comments
 
                         try {
                             JSONObject object = response.getJSONObject();
@@ -110,6 +119,8 @@ public class FbFeedAdapter extends ArrayAdapter<FbPageFeed> {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        //endregion get Comments
                     }
                 });
 
@@ -118,10 +129,10 @@ public class FbFeedAdapter extends ArrayAdapter<FbPageFeed> {
         request.setParameters(parameters);
         request.executeAsync();
 
+        //endregion get Likes, Comments
 
         return convertView;
     }
 
 
-    //endregion Fonctions
 }

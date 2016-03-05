@@ -23,7 +23,6 @@ public class FbPage extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.fb_page);
 
-
         //region Fragment
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_page);
         viewPager.setAdapter(new FBPagePagerAdapter(getSupportFragmentManager(), FbPage.this));

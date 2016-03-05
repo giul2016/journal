@@ -144,7 +144,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
         post_video_bttn = (ShareButton) view.findViewById(R.id.post_video_bttn);
         post_link_bttn = (ShareButton) view.findViewById(R.id.post_link_bttn);
         shareDialog = new ShareDialog(this);
-        user_cover_photo = (ImageView)view.findViewById(R.id.user_cover_photo);
 
         if (AccessToken.getCurrentAccessToken() == null) {
             name_tv.setText("You are not logged in. Please log in!");
@@ -214,6 +213,7 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
 
         //region Log in
 
+
         login_btn.setReadPermissions(permissions);
         login_btn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -223,6 +223,7 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
 
+                                LoginManager.getInstance().logInWithPublishPermissions(getActivity(),Arrays.asList("publish_actions"));
                                 String id = object.optString("id");
                                 String name = object.optString("name");
                                 name_tv.setText("Hi " + name + "!");
@@ -321,14 +322,6 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
 
     //endregion init
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        init_info();
-    }
-//endregion functions
-
-
     public String getRealPathFromURI(Uri uri) {
         if (uri == null) {
             return null;
@@ -342,6 +335,14 @@ public class FbInfoFragment extends android.support.v4.app.Fragment {
             return cursor.getString(column_index);
         }
         return uri.getPath();
+    }
+
+//endregion functions
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init_info();
     }
 
 }

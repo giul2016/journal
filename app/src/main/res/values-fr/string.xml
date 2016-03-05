@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Journal</string>
+    <string name="title_activity_news">Actualités</string>
+    <string name="download">Téléchargement</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="prefCatNotifications">Notifications</string>
+    <string name="prefNotificationsTitle">Activer les notifications</string>
+    <string name="actionSettings">Paramètres</string>
+    <string name="drawerOpen">Drawer Open</string>
+    <string name="drawerClose">Drawer Close</string>
+    <string name="explore">Explore</string>
+    <string name="actionEditCategories">Modifier les catégories</string>
+    <string name="actionAddCategory">Ajouter une catégorie</string>
+    <string name="addCategory">Ajouter nouvelle catégorie</string>
+    <string name="addCategoryDialogMessage">Entrez un titre pour la nouvelle catégorie</string>
+    <string name="addNewsFeed">Ajouter un nouveau flux de nouvelles</string>
+    <string name="addNewsFeedLabelEditText">Label</string>
+    <string name="addNewsFeedLinkEditText">Lien</string>
+    <string name="add">Ajouter</string>
+
+    <string name="facebook_app_id">185863238451126</string>
+    <string name="fb_share_photo">Photo</string>
+    <string name="fb_share_video">Video</string>
+    <string name="fb_share_link">Lien</string>
+    <string name="fb_user_feed">Actualités</string>
+    <string name="fb_user_likes_page">Mentions J’aime</string>
+    <string name="fb_user_info">À propos</string>
+    <string name="fb_page_feed">Actualités</string>
+    <string name="fb_page_info">À propos</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

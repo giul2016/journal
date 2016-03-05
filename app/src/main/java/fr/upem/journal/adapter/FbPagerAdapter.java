@@ -1,10 +1,12 @@
 package fr.upem.journal.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import fr.upem.journal.R;
 import fr.upem.journal.fragment.FbInfoFragment;
 import fr.upem.journal.fragment.FbLikedPagesFragment;
 import fr.upem.journal.fragment.FbUserFeedFreagment;
@@ -14,12 +16,14 @@ import fr.upem.journal.fragment.FbUserFeedFreagment;
  */
 public class FbPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[]{"Feed", "Liked pages", "Info"};
     private Context context;
+    private String tabTitles[];
+
 
     public FbPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        tabTitles = new String[]{context.getString(R.string.fb_user_feed), context.getString(R.string.fb_user_likes_page),context.getString(R.string.fb_user_info)};
     }
 
     @Override

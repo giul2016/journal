@@ -36,7 +36,9 @@ public class FbComment extends AppCompatActivity {
         setContentView(R.layout.fb_comment);
         Intent intent = getIntent();
         String feedId = intent.getStringExtra("feedId");
-        commentList = (ListView)findViewById(R.id.fb_comment_lv);
+        commentList = (ListView) findViewById(R.id.fb_comment_lv);
+
+        //region get Comment
 
 //        facebookUserComment.clear();
         GraphRequest request = GraphRequest.newGraphPathRequest(
@@ -56,7 +58,7 @@ public class FbComment extends AppCompatActivity {
                                     facebookUserComment.add(new FbUserComment((JSONObject) array.get(i)));
                                 }
 
-                                FbUserFeedCommentAdapter adapter = new FbUserFeedCommentAdapter(getBaseContext(),facebookUserComment);
+                                FbUserFeedCommentAdapter adapter = new FbUserFeedCommentAdapter(getBaseContext(), facebookUserComment);
                                 commentList.setAdapter(adapter);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -70,6 +72,8 @@ public class FbComment extends AppCompatActivity {
         parameters.putString("fields", "comments");
         request.setParameters(parameters);
         request.executeAsync();
+
+        //endregion get Comment
 
     }
 }

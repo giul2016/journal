@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Journal</string>
+    <string name="title_activity_news">Tin tức</string>
+    <string name="download">Tải về</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="prefCatNotifications">Thông báo</string>
+    <string name="prefNotificationsTitle">Kích hoạt tính năng thông báo</string>
+    <string name="actionSettings">Thiết lập</string>
+    <string name="drawerOpen">Drawer Open</string>
+    <string name="drawerClose">Drawer Close</string>
+    <string name="explore">Explore</string>
+    <string name="actionEditCategories">Chỉnh sửa danh mục</string>
+    <string name="actionAddCategory">Thêm danh mục</string>
+    <string name="addCategory">Thêm danh mục mới</string>
+    <string name="addCategoryDialogMessage">Nhập tiêu đề cho mục mới</string>
+    <string name="addNewsFeed">Thêm một nguồn tin mới</string>
+    <string name="addNewsFeedLabelEditText">Nhãn</string>
+    <string name="addNewsFeedLinkEditText">Liên kết</string>
+    <string name="add">Thêm</string>
+
+    <string name="facebook_app_id">185863238451126</string>
+    <string name="fb_share_photo">Hình ảnh</string>
+    <string name="fb_share_video">Video</string>
+    <string name="fb_share_link">Đường dẫn</string>
+    <string name="fb_user_feed">Dòng thời gian</string>
+    <string name="fb_user_likes_page">Lượt thích</string>
+    <string name="fb_user_info">Thông tin</string>
+    <string name="fb_page_feed">Dòng thời gian</string>
+    <string name="fb_page_info">Thông tin</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

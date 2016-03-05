@@ -60,15 +60,17 @@ public class FbUserFeedCommentAdapter extends ArrayAdapter<FbUserComment> {
         }
 
 
+        //region init
         comment_tv = (TextView)convertView.findViewById(R.id.user_feed_comment_mess_tv);
         created_tv = (TextView)convertView.findViewById(R.id.user_feed_comment_created_tv);
         profilePictureView = (ProfilePictureView)convertView.findViewById(R.id.user_comment_picture);
         user_name = (TextView)convertView.findViewById(R.id.fb_user_name);
+        //endregion init
 
+        //region get mess, user,..
         comment_tv.setText(comment.getMessage());
         created_tv.setText(comment.getCreated_time());
         profilePictureView.setProfileId(comment.getUser());
-
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + comment.getUser(),
@@ -84,7 +86,7 @@ public class FbUserFeedCommentAdapter extends ArrayAdapter<FbUserComment> {
                 });
 
         request.executeAsync();
-
+        //endregion get mess, user,..
 
         return convertView;
     }

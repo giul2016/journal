@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.facebook.AccessToken;
@@ -14,6 +15,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +65,7 @@ public class FbUserFeedFreagment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fb_user_feed, container, false);
-        feedList = (ListView)view.findViewById(R.id.fb_user_feed_lv);
+        feedList = (ListView) view.findViewById(R.id.fb_user_feed_lv);
         Intent intent = getActivity().getIntent();
         String pageId = intent.getStringExtra("pageId");
         final String pageName = intent.getStringExtra("pageName");
@@ -76,13 +78,15 @@ public class FbUserFeedFreagment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        getFeed();
+        getFeed();
     }
 
 
-    public void getFeed(){
+    public void getFeed() {
 
         facebookUserFeed.clear();
+
+
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me",
@@ -91,8 +95,7 @@ public class FbUserFeedFreagment extends android.support.v4.app.Fragment {
                     public void onCompleted(GraphResponse response) {
                         try {
                             JSONObject object = response.getJSONObject();
-                            if (object!=null)
-                            {
+                            if (object != null) {
 
                                 JSONObject feed = object.getJSONObject("feed");
                                 JSONArray array = feed.getJSONArray("data");
@@ -102,8 +105,7 @@ public class FbUserFeedFreagment extends android.support.v4.app.Fragment {
                                 }
 
 
-
-                                FbUserFeedAdapter adapter = new FbUserFeedAdapter(getContext(),facebookUserFeed);
+                                FbUserFeedAdapter adapter = new FbUserFeedAdapter(getContext(), facebookUserFeed);
                                 feedList.setAdapter(adapter);
                             }
                         } catch (JSONException e) {
@@ -115,10 +117,9 @@ public class FbUserFeedFreagment extends android.support.v4.app.Fragment {
                 });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "feed.limit(50){full_picture,message,created_time}");
+        parameters.putString("fields", "feed.limit(50){full_picture,message,created_time,link}");
         request.setParameters(parameters);
         request.executeAsync();
-
 
 
     }
