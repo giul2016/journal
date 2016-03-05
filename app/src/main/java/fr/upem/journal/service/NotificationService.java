@@ -2,29 +2,25 @@ package fr.upem.journal.service;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.Context;
-import android.os.Parcel;
-import android.support.v4.app.NotificationCompat;
+import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.List;
 
+import fr.upem.journal.R;
 import fr.upem.journal.receiver.AlarmReceiver;
+import fr.upem.journal.utils.ObjectSerializer;
 
 public class NotificationService extends IntentService {
 
     private int nextNotificationId = 1;
 
-    private final List<Integer> notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
+    //private final List<Integer> notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
 
     public NotificationService() {
         super("NotificationService");
@@ -32,19 +28,25 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
-        intent.putExtra("id", nextNotificationId++);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
+        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if(preferences.getBoolean(getResources().getString(R.string.prefNotificationActiveKey), true)) {
+            Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
+            intent.putExtra("id", nextNotificationId++);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
 
-        // cancel the previous alarm set
-        alarmManager.cancel(pendingIntent);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        Calendar nextFiringCalendar = getNextFiringCalendar();
-        alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
+            // cancel the previous alarm set
+            alarmManager.cancel(pendingIntent);
 
-        Log.d("ALARM", "Next alarm set to "+nextFiringCalendar.get(Calendar.HOUR_OF_DAY)+"h ("+nextFiringCalendar.getTimeInMillis()+")" );
+            Calendar nextFiringCalendar = getNextFiringCalendar();
+            alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
+
+            Log.d("ALARM", "Next alarm set to " + nextFiringCalendar.get(Calendar.HOUR_OF_DAY) + "h (" + nextFiringCalendar.getTimeInMillis() + ")");
+        } else {
+            Log.d("ALARM", "notification not active");
+        }
     }
 
     private Calendar getNextFiringCalendar() {
@@ -53,8 +55,20 @@ public class NotificationService extends IntentService {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        Log.d("ALARM", "current hour : "+currentCalendar.get(Calendar.HOUR_OF_DAY)+":"+currentCalendar.get(Calendar.MINUTE)+":"+currentCalendar.get(Calendar.SECOND));
+        Log.d("ALARM", "current hour : " + currentCalendar.get(Calendar.HOUR_OF_DAY) + ":" + currentCalendar.get(Calendar.MINUTE) + ":" + currentCalendar.get(Calendar.SECOND));
 
+        ArrayList<Integer> notificationHours;
+        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
+        try {
+            notificationHours = (ArrayList<Integer>) ObjectSerializer.deserialize(
+                    preferences.getString(
+                            "notification_hours",
+                            ObjectSerializer.serialize(new ArrayList<>(Arrays.asList(8, 12, 20)))
+                    )
+            );
+        } catch (Exception e) {
+            notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
+        }
         Collections.sort(notificationHours);
 
         for(int hour : notificationHours) {
