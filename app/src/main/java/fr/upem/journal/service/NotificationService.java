@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -28,18 +29,18 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences preferences = getSharedPreferences("fr.upem.Journal", MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
+        intent.putExtra("id", nextNotificationId++);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // cancel the previous alarm set
+        alarmManager.cancel(pendingIntent);
 
         if(preferences.getBoolean(getResources().getString(R.string.prefNotificationActiveKey), true)) {
-            Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
-            intent.putExtra("id", nextNotificationId++);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-            // cancel the previous alarm set
-            alarmManager.cancel(pendingIntent);
-
             Calendar nextFiringCalendar = getNextFiringCalendar();
             alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
 
