@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,19 +18,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import fr.upem.journal.R;
 import fr.upem.journal.adapter.NewsFeedFragmentPagerAdapter;
+import fr.upem.journal.newsfeed.NewsFeed;
+import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.newsfeed.WeatherFeed;
+import fr.upem.journal.task.FetchRSSFeedTask;
+import fr.upem.journal.task.FetchRSSWeatherFeedTask;
 
-/**
- * Created by martine on 04/03/2016.
- */
+
 public class WeatherActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
+    //WeatherFeed weatherFeed;
+    private List<WeatherFeed> feeds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +49,10 @@ public class WeatherActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        fetch();
+
+        updateDisplay();
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
@@ -91,6 +106,9 @@ public class WeatherActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
+
     }
 
     @Override
@@ -131,4 +149,24 @@ public class WeatherActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void fetch() {
+        try {
+            feeds = new FetchRSSWeatherFeedTask().execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            return;
+        }
+    }
+
+    private void updateDisplay() {
+        TextView country = (TextView) findViewById(R.id.country);
+        country.setText(feeds.get(0).getCountry());
+
+        TextView city = (TextView) findViewById(R.id.city);
+        city.setText(feeds.get(0).getCity());
+
+        TextView temperature = (TextView) findViewById(R.id.temperature);
+        temperature.setText(feeds.get(0).getTemperature());
+    }
+
 }
