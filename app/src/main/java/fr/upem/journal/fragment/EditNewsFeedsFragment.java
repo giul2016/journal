@@ -12,6 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
+import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.database.DatabaseHelper;
 import fr.upem.journal.newsfeed.NewsFeed;
 
@@ -73,6 +74,7 @@ public class EditNewsFeedsFragment extends Fragment {
     public void addNewsFeedLabel(String label) {
         newsFeedLabels.add(label);
         adapter.notifyDataSetChanged();
+        NewsFeedActivity.refresh();
     }
 
     public void removeNewsFeedLabel(String label) {
@@ -82,6 +84,8 @@ public class EditNewsFeedsFragment extends Fragment {
 
         if (!databaseHelper.removeNewsFeed(label)) {
             addNewsFeedLabel(label);
+        }else{
+            NewsFeedActivity.refresh();
         }
         databaseHelper.close();
     }

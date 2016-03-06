@@ -13,8 +13,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
+import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.database.DatabaseHelper;
-import fr.upem.journal.dialog.RemoveCategoryDialogFragment;
 import fr.upem.journal.newsfeed.NewsCategory;
 
 public class EditCategoriesFragment extends Fragment {
@@ -77,6 +77,7 @@ public class EditCategoriesFragment extends Fragment {
     public void addCategoryTitle(String categoryTitle) {
         categoryTitles.add(categoryTitle);
         adapter.notifyDataSetChanged();
+        NewsFeedActivity.refresh();
     }
 
     public void removeCategoryTitle(String categoryTitle) {
@@ -87,6 +88,8 @@ public class EditCategoriesFragment extends Fragment {
 
         if (!databaseHelper.removeNewsCategory(newsCategory)) {
             addCategoryTitle(categoryTitle);
+        }else{
+            NewsFeedActivity.refresh();
         }
         databaseHelper.close();
     }
