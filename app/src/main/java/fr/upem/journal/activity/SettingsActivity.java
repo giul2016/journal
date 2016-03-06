@@ -64,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 // if there is no hour selected, notifications are disabled
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(prefNotificationActiveKey, false);
-                editor.commit();
+                editor.apply();
 
                 // refresh activity
                 finish();

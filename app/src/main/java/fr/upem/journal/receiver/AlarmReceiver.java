@@ -27,7 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         builder.setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(intent.getIntExtra("id", 1), builder.build());
 
         // start service to set the next alarm

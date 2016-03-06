@@ -17,13 +17,10 @@ import java.util.Set;
 
 import fr.upem.journal.R;
 import fr.upem.journal.receiver.AlarmReceiver;
-import fr.upem.journal.utils.ObjectSerializer;
 
 public class NotificationService extends IntentService {
 
     private int nextNotificationId = 1;
-
-    //private final List<Integer> notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
 
     public NotificationService() {
         super("NotificationService");
@@ -68,16 +65,6 @@ public class NotificationService extends IntentService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> hours = preferences.getStringSet(getResources().getString(R.string.prefNotificationHoursKey), new HashSet<>(Arrays.asList("8", "12", "20")));
 
-        /*try {
-            notificationHours = (ArrayList<Integer>) ObjectSerializer.deserialize(
-                    preferences.getString(
-                            "notification_hours",
-                            ObjectSerializer.serialize(new ArrayList<>(Arrays.asList(8, 12, 20)))
-                    )
-            );
-        } catch (Exception e) {
-            notificationHours = new ArrayList<>(Arrays.asList(8, 12, 20));
-        }*/
         for(String hour : hours) {
             notificationHours.add(Integer.parseInt(hour));
         }
