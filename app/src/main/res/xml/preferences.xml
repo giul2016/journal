@@ -10,11 +10,17 @@
             android:key="@string/prefNotificationActiveKey"
             android:title="@string/prefNotificationsTitle"/>
 
-        <MultiSelectListPreference
+        <fr.upem.journal.preference.NotificationHoursPreference
             android:key="@string/prefNotificationHoursKey"
             android:title="Notification hours"
-            android:entries="@array/notificationHoursEntries"
-            android:entryValues="@array/notificationHoursValues" />
+            android:defaultValue="@array/empty_array" />
+            <!--android:entries="@array/notificationHoursEntries"
+            android:entryValues="@array/notificationHoursValues"-->
+
+        <fr.upem.journal.preference.TimePreference
+            android:key="time_picker"
+            android:title="Add a notification hour"
+            android:defaultValue="8:00" />
 
     </PreferenceCategory>
 

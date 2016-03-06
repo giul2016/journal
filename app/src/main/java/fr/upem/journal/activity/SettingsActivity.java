@@ -13,6 +13,7 @@ import java.util.Set;
 
 import fr.upem.journal.R;
 import fr.upem.journal.fragment.SettingsFragment;
+import fr.upem.journal.preference.NotificationHoursPreference;
 import fr.upem.journal.service.NotificationService;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -44,6 +45,17 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
         String prefNotificationHoursKey = getResources().getString(R.string.prefNotificationHoursKey);
         String prefNotificationActiveKey = getResources().getString(R.string.prefNotificationActiveKey);
+
+        if(key.equals("time_picker")) {
+
+            String selectedHourString = sharedPreferences.getString("time_picker", "8:00");
+            NotificationHoursPreference.addHour(selectedHourString);
+            NotificationHoursPreference.updateValues(this);
+
+            // start service to update alarm
+            Intent intent = new Intent(SettingsActivity.this, NotificationService.class);
+            startService(intent);
+        }
 
         if(key.equals(prefNotificationActiveKey) || key.equals(prefNotificationHoursKey)) {
 
