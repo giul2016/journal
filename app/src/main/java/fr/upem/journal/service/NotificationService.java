@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.upem.journal.R;
+import fr.upem.journal.preference.NotificationHoursPreference;
 import fr.upem.journal.receiver.AlarmReceiver;
 
 public class NotificationService extends IntentService {
@@ -63,7 +64,7 @@ public class NotificationService extends IntentService {
 
         ArrayList<Integer> notificationHours = new ArrayList<>();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> hours = preferences.getStringSet(getResources().getString(R.string.prefNotificationHoursKey), new HashSet<>(Arrays.asList("8", "12", "20")));
+        Set<String> hours = preferences.getStringSet(getResources().getString(R.string.prefNotificationSelectedHoursKey), NotificationHoursPreference.DEF_VALUES);
 
         for(String hour : hours) {
             notificationHours.add(Integer.parseInt(hour));

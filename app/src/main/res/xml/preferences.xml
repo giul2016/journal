@@ -11,7 +11,7 @@
             android:title="@string/prefNotificationsTitle"/>
 
         <fr.upem.journal.preference.NotificationHoursPreference
-            android:key="@string/prefNotificationHoursKey"
+            android:key="@string/prefNotificationSelectedHoursKey"
             android:title="Notification hours"
             android:defaultValue="@array/empty_array" />
             <!--android:entries="@array/notificationHoursEntries"

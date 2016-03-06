@@ -20,12 +20,13 @@ import fr.upem.journal.R;
 public class NotificationHoursPreference extends MultiSelectListPreference {
 
     private static final Set<String> entries = new HashSet<>();
+    public static final HashSet<String> DEF_VALUES = new HashSet<>(Arrays.asList("8", "12", "20"));
 
     public NotificationHoursPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Set<String> defaultValues = defaultSharedPreferences.getStringSet(context.getResources().getString(R.string.prefNotificationHoursKey), new HashSet<>(Arrays.asList("8", "12", "20")));
+        Set<String> defaultValues = defaultSharedPreferences.getStringSet(context.getResources().getString(R.string.prefNotificationAllHoursKey), DEF_VALUES);
         for(String hour : defaultValues) {
             entries.add(hour + ":00");
         }
@@ -33,21 +34,28 @@ public class NotificationHoursPreference extends MultiSelectListPreference {
         updateEntries();
     }
 
-    public static void addHour(String hour) {
+    public static void addHour(Context context, String hour) {
         entries.add(hour);
-    }
-
-    public static void updateValues(Context context) {
-        Set<String> values = new HashSet<>();
-        //values.clear();
-        for(String hour : entries) {
-            Log.d("SELECT", "hour : "+hour + " ("+hour.split(":")[0]+")");
-            values.add(hour.split(":")[0]);
-        }
+        String allHoursKey = context.getResources().getString(R.string.prefNotificationAllHoursKey);
+        String selectedHoursKey = context.getResources().getString(R.string.prefNotificationSelectedHoursKey);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Set<String> values = sharedPreferences.getStringSet(allHoursKey, DEF_VALUES);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(context.getResources().getString(R.string.prefNotificationHoursKey), values).apply();
+        values.add(hour.split(":")[0]);
+        editor.putStringSet(allHoursKey, values).apply();
+
+        values = sharedPreferences.getStringSet(selectedHoursKey, DEF_VALUES);
+        editor = sharedPreferences.edit();
+        values.add(hour.split(":")[0]);
+        editor.putStringSet(selectedHoursKey, values).apply();
+    }
+
+    public static void updateValues(Context context, Set<String> values) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(context.getResources().getString(R.string.prefNotificationSelectedHoursKey), values).apply();
     }
 
     private void updateEntries() {
@@ -68,7 +76,7 @@ public class NotificationHoursPreference extends MultiSelectListPreference {
     @Override
     protected View onCreateDialogView() {
 
-        updateValues(getContext());
+        //updateValues(getContext(), getValues());
 
         updateEntries();
         Log.d("SELECT", "on create dialog");
@@ -76,19 +84,12 @@ public class NotificationHoursPreference extends MultiSelectListPreference {
         return super.onCreateDialogView();
     }
 
-    @Override
-    protected void onBindDialogView(View v) {
-        super.onBindDialogView(v);
-
-        updateValues(getContext());
-
-        updateEntries();
-        Log.d("SELECT", "on bind dialog");
-    }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
+
+        updateValues(getContext(), getValues());
 
         Log.d("SELECT", "dialog closed");
     }

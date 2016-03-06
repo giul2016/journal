@@ -10,7 +10,8 @@
     <string name="prefCatNotifications">Notifications</string>
     <string name="prefNotificationsTitle">Activate notifications</string>
     <string name="prefNotificationActiveKey">notification_active</string>
-    <string name="prefNotificationHoursKey">notification_hours</string>
+    <string name="prefNotificationSelectedHoursKey">notification_hours</string>
+    <string name="prefNotificationAllHoursKey">notification_all_hours</string>
 
     <string name="actionSettings">Settings</string>
     <string name="actionEditCategories">Edit Categories</string>
