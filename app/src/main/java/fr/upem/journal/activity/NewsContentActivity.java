@@ -64,6 +64,14 @@ public class NewsContentActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, WebActivity.class);
                 intent.putExtra("link", newsFeedItem.getLink());
                 startActivity(intent);
+                return true;
+            case R.id.actionShare:
+                Intent shareFeed = new Intent(android.content.Intent.ACTION_SEND);
+                shareFeed.setType("text/plain");
+                shareFeed.putExtra(android.content.Intent.EXTRA_SUBJECT, "Look at this info ! ");
+                String shareMessage = newsFeedItem.getLink();
+                shareFeed.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareFeed, "Choose how you would like to share this info"));
             default:
                 return super.onOptionsItemSelected(item);
         }
