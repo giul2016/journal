@@ -21,6 +21,7 @@
     <string name="drawerClose">Drawer Close</string>
 
     <string name="explore">Explore</string>
+    <string name="share">Share</string>
 
     <string name="addCategory">Add new category</string>
     <string name="addCategoryDialogMessage">Enter a title for the new category</string>
