@@ -38,6 +38,8 @@ public class NewsFeedActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private NewsFeedFragmentPagerAdapter adapter;
 
+    private static NewsFeedActivity nfa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +104,8 @@ public class NewsFeedActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        nfa = this;
     }
 
     @Override
@@ -159,4 +163,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         }
     }
 
+    public static void refresh (){
+        nfa.recreate();
+    }
 }

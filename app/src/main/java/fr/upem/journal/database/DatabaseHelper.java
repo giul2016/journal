@@ -51,6 +51,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean removeNewsFeed(String label) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.delete(DatabaseContract.NewsFeed.TABLE_NAME, "label = ?", new String[]{label});
+        } catch (SQLiteConstraintException e) {
+            Log.d("DB", "Conflict on deletion");
+            return false;
+        }
+
+        return true;
+    }
+
     public boolean insertNewsCategory(NewsCategory newsCategory) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -67,6 +80,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for (NewsFeed newsFeed : newsCategory.getFeeds()) {
             insertNewsFeed(newsFeed, newsCategory.getTitle());
+        }
+
+        return true;
+    }
+
+    public boolean removeNewsCategory(NewsCategory newsCategory) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        for (NewsFeed newsFeed : newsCategory.getFeeds()) {
+            removeNewsFeed(newsFeed.getLabel());
+        }
+
+        try {
+            db.delete(DatabaseContract.NewsCategory.TABLE_NAME, "title = ?", new String[]{newsCategory.getTitle()});
+        } catch (SQLiteConstraintException e) {
+            Log.d("DB", "Conflict on deletion");
+            return false;
         }
 
         return true;
