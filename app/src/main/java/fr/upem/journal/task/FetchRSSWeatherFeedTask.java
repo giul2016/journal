@@ -16,6 +16,7 @@ import fr.upem.journal.utils.RSSParser;
 
 public class FetchRSSWeatherFeedTask extends AsyncTask<WeatherFeed, Integer, List<WeatherFeed>> {
 
+
     private final String url = "http://api.openweathermap.org/data/2.5/weather?q=Paris,fr&mode=xml&units=metric";
     private final String pidStr = "&appid=";
     private final String key = "595bb54f8ec24acca91ed85467e03442";

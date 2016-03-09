@@ -107,8 +107,6 @@ public class WeatherActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-
     }
 
     @Override
@@ -159,9 +157,9 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        TextView country = (TextView) findViewById(R.id.country);
+        /*TextView country = (TextView) findViewById(R.id.country);
         country.setText(feeds.get(0).getCountry());
-
+*/
         TextView city = (TextView) findViewById(R.id.city);
         city.setText(feeds.get(0).getCity());
 
