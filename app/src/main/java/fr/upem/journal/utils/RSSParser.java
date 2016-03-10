@@ -116,7 +116,6 @@ public class RSSParser {
             return null;
         }
 
-
         try {
             eventType = parser.getEventType();
         } catch (XmlPullParserException e) {

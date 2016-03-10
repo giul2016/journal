@@ -1,4 +1,4 @@
-package fr.upem.journal.task;
+package fr.upem.journal.service;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -15,7 +15,7 @@ import fr.upem.journal.utils.RSSParser;
 
 public class WeatherService {
 
-
+    private String dumb;
     private String location;
     private String temperatureUnit;
 
@@ -37,10 +37,12 @@ public class WeatherService {
             @Override
             protected WeatherFeed doInBackground(String... params) {
                 WeatherFeed weatherFeed = null;
+
                 try {
                     weatherFeed = download(location, temperatureUnit);
+
                 } catch (IOException e) {
-                    Log.e("LOAD WEATHER", "Error while fetching rss feed data");
+                    Log.e("DEBUG WEATHER", "Error while fetching rss feed data");
                 }
                 return weatherFeed;
             }
@@ -48,6 +50,7 @@ public class WeatherService {
             @Override
             protected void onPostExecute(WeatherFeed s) {
                 super.onPostExecute(s);
+
             }
         }.execute(location, temperatureUnit);
     }

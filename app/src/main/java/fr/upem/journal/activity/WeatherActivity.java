@@ -1,14 +1,23 @@
 package fr.upem.journal.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.VisibleForTesting;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,21 +28,25 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import fr.upem.journal.R;
 import fr.upem.journal.newsfeed.WeatherFeed;
-import fr.upem.journal.task.WeatherService;
+import fr.upem.journal.service.LocationService;
+import fr.upem.journal.service.WeatherService;
 
 
 public class WeatherActivity extends AppCompatActivity {
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION_ACCESS = 123;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -57,7 +70,6 @@ public class WeatherActivity extends AppCompatActivity {
 
     private final Map<String, MorningEveningImages> conditions = new HashMap<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,13 +79,19 @@ public class WeatherActivity extends AppCompatActivity {
         service = new WeatherService();
 
         WeatherFeed currentWeather = null;
+
+
         try {
-            currentWeather = service.refreshWeather("lat=48.85&lon=2.35", "celsius").get();
+            currentWeather = service.refreshWeather(getCurrentLocation(), "celsius").get();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+            return;
+        } catch (ExecutionException | IOException e) {
             e.printStackTrace();
+            return;
         }
+
+        System.err.println("currentWeather : " + currentWeather);
         updateDisplay(currentWeather);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -187,18 +205,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void updateDisplay(WeatherFeed weatherFeed) {
-        /*SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String dateFFormat;
-        String[] strings = weatherFeed.getDate().split("-");
-
-        try {
-            dateFFormat = sdf.format(sdf.parse(strings[0]));
-        } catch (ParseException e) {
-            return;
-        }*/
-
         this.cityTextView.setText(weatherFeed.getCity());
-        //this.dateTextView.setText(dateFFormat + ' '+ strings[1]);
         this.dateTextView.setText(weatherFeed.getDate());
         this.temperatureTextView.setText(weatherFeed.getTemperature());
         this.unitTextView.setText(weatherFeed.getTemperatureUnit());
@@ -225,7 +232,7 @@ public class WeatherActivity extends AppCompatActivity {
         this.conditions.put("clear sky", new MorningEveningImages(R.drawable.sunny, R.drawable.clear_night));
         this.conditions.put("few clouds", new MorningEveningImages(R.drawable.partly_cloudy, R.drawable.cloudy_night));
         this.conditions.put("scattered clouds", new MorningEveningImages(R.drawable.overcast, R.drawable.overcast));
-        this.conditions.put("scattered clouds", new MorningEveningImages(R.drawable.overcast, R.drawable.overcast));
+        this.conditions.put("overcast clouds", new MorningEveningImages(R.drawable.overcast, R.drawable.overcast));
         this.conditions.put("broken clouds", new MorningEveningImages(R.drawable.overcast, R.drawable.heavy_cloudy_night));
         this.conditions.put("shower rain", new MorningEveningImages(R.drawable.heavy_rain, R.drawable.heavy_rain));
         this.conditions.put("rain", new MorningEveningImages(R.drawable.rain_sun, R.drawable.night_rain));
@@ -235,10 +242,14 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void searchConditionImage() {
+        if (this.skyStateTextView.getText() == null) {
+            Log.d("DEBUG LOCATION", "get image");
+            return;
+        }
+        Log.d("DEBUG LOCATION", "Condition : " + this.skyStateTextView.getText());
         int value = conditions.get(this.skyStateTextView.getText()).getImage();
         this.skyStateImageView.setImageResource(value);
     }
-
 
     private class MorningEveningImages {
         private final int morning;
@@ -249,47 +260,98 @@ public class WeatherActivity extends AppCompatActivity {
             this.evening = evening;
         }
 
-        public int getEvening() {
-            return evening;
-        }
-
-        public int getMorning() {
-            return morning;
-        }
-
         public int getImage() {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            Date currentTime = null;
-            Date afternoon = null;
-            Date midnight = null;
+            Date currentTimeDate = new Date();
+            Date afternoonDate = null;
+            Date midnightDate = null;
 
-            int t1;
-            int t2;
-            int t3;
+            int currentTime;
+            int evening;
+            int midnight;
 
             try {
-                currentTime = sdf.parse(sdf.format(new Date()));
-                afternoon = sdf.parse("20:00:00");
-                midnight = sdf.parse("23:59:59");
 
-                t1 = (int) (currentTime.getTime() % (24*60*60*1000L));
-                t2 = (int) (afternoon.getTime() % (24*60*60*1000L));
-                t3 = (int) (midnight.getTime() % (24*60*60*1000L));
+                afternoonDate = sdf.parse("20:00:00");
+                midnightDate = sdf.parse("00:00:00");
 
-                /*System.out.println("currentTime : " + currentTime);
-                System.out.println("limitTime : " + afternoon);
-                System.out.println("midnight : " + midnight);
-                */
+                currentTime = (int) (currentTimeDate.getTime() % (24 * 60 * 60 * 1000L));
+                evening = (int) (afternoonDate.getTime() % (24 * 60 * 60 * 1000L));
+                midnight = (int) (midnightDate.getTime() % (24 * 60 * 60 * 1000L));
+
             } catch (ParseException e) {
                 return -1;
             }
 
-            if (t1 < t2 && t1 > t3) {
+            if (currentTime < evening && currentTime > midnight) {
                 return this.morning;
             }
 
             return this.evening;
-}
+        }
     }
+
+    private String getCurrentLocation() throws IOException {
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationService locationService = new LocationService();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("DEBUG LOCATION", "getCurrentLocation");
+
+            ActivityCompat.requestPermissions( this,
+                    new String[] {
+                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    },
+                    MY_PERMISSIONS_REQUEST_LOCATION_ACCESS);
+        }
+
+
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 10, locationService);
+        Location loc  = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+        String location = null;
+        if (loc != null) {
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
+            if (addresses.size() > 0)
+                location = "q=" + addresses.get(0).getLocality();
+        }
+        else {
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = gcd.getFromLocation(locationService.getLatitude(), locationService.getLongitude(), 1);
+            if (addresses.size() > 0)
+                location = "q=" + addresses.get(0).getLocality();
+        }
+        return location;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION_ACCESS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // yes
+                    Log.d("DEBUG LOCATION", "YES IT WORKED");
+
+
+                }
+                if (grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // yes
+                    Log.d("DEBUG LOCATION", "YES IT WORKED VERY WELL");
+
+
+                } else {
+                    // no
+                    Log.d("DEBUG LOCATION", "HO NO");
+                }
+
+                break;
+        }
+    }
+
 }
 

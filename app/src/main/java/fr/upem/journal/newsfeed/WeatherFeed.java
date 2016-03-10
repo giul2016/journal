@@ -18,7 +18,7 @@ public class WeatherFeed {
     public WeatherFeed(String country, String city, String date, String temperature, String temperatureUnit, String skyState, String maxTemperature, String minTemperature, String humidity, String pressure) {
         this.country = country;
         this.city = city;
-        this.date = date.replace('T', ' ');
+        this.date = date;
         this.temperature = temperature;
         this.temperatureUnit = temperatureUnit;
         this.skyState = skyState;
