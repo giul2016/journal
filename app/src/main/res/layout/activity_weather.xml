@@ -67,7 +67,7 @@
                 android:id="@+id/temperature"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:layout_marginLeft="200dp"
+                android:layout_marginLeft="100dp"
                 android:textStyle="bold"
                 android:textSize="50dp"
                 android:textColor="#0c505e" />
@@ -86,7 +86,7 @@
         <ImageView
             android:layout_width="156dp"
             android:layout_height="156dp"
-            android:id="@+id/imageView"
+            android:id="@+id/sky"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/rain_snow"
             android:layout_marginTop="4dp" />

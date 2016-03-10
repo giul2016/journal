@@ -1,55 +1,31 @@
 package fr.upem.journal.newsfeed;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
 
 
-public class WeatherFeed implements Parcelable {
+public class WeatherFeed {
     private final String country;
     private final String city;
+    private final String date;
     private final String temperature;
-    private final String clouds;
+    private final String temperatureUnit;
+    private final String skyState;
+    private final String maxTemperature;
+    private final String minTemperature;
     private final String humidity;
+    private final String pressure;
 
-
-    public WeatherFeed(String country, String city, String temperature, String clouds, String humidity) {
+    public WeatherFeed(String country, String city, String date, String temperature, String temperatureUnit, String skyState, String maxTemperature, String minTemperature, String humidity, String pressure) {
         this.country = country;
         this.city = city;
+        this.date = date.replace('T', ' ');
         this.temperature = temperature;
-        this.clouds = clouds;
+        this.temperatureUnit = temperatureUnit;
+        this.skyState = skyState;
+        this.maxTemperature = maxTemperature;
+        this.minTemperature = minTemperature;
         this.humidity = humidity;
-    }
-
-    public static final Creator<WeatherFeed> CREATOR = new Creator<WeatherFeed>() {
-        @Override
-        public WeatherFeed createFromParcel(Parcel in) {
-            String country = in.readString();
-            String city = in.readString();
-            String temperature = in.readString();
-            String clouds = in.readString();
-            String humidity = in.readString();
-            return new WeatherFeed(country, city, temperature, clouds, humidity);
-        }
-
-        @Override
-        public WeatherFeed[] newArray(int size) {
-            return new WeatherFeed[0];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(country);
-        dest.writeString(city);
-        dest.writeString(temperature);
-        dest.writeSerializable(clouds);
-        dest.writeString(humidity);
+        this.pressure = pressure;
     }
 
     @Override
@@ -69,4 +45,31 @@ public class WeatherFeed implements Parcelable {
         return temperature;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public String getHumidity() {
+        return humidity + "%";
+    }
+
+    public String getMaxTemperature() {
+        return maxTemperature + "°c";
+    }
+
+    public String getMinTemperature() {
+        return minTemperature + "°c";
+    }
+
+    public String getPressure() {
+        return pressure + "hPa";
+    }
+
+    public String getSkyState() {
+        return skyState;
+    }
+
+    public String getTemperatureUnit() {
+        return "°C";
+    }
 }

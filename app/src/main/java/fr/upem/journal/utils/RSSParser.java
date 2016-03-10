@@ -1,6 +1,5 @@
 package fr.upem.journal.utils;
 
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -94,7 +93,21 @@ public class RSSParser {
     }
 
     public static WeatherFeed parseWeather(InputStream rssInputStream) {
+
+        String country = null;
+        String city = null;
+        String date = null;
+        String temperature = null;
+        String temperatureUnit = null;
+        String skyState = null;
+        String maxTemperature = null;
+        String minTemperature = null;
+        String humidity = null;
+        String pressure = null;
+
         WeatherFeed currentWeather = null;
+
+        int eventType;
 
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -103,18 +116,12 @@ public class RSSParser {
             return null;
         }
 
-        int eventType;
+
         try {
             eventType = parser.getEventType();
         } catch (XmlPullParserException e) {
             eventType = XmlPullParser.END_DOCUMENT;
         }
-
-        String country = null;
-        String city = null;
-        String temperature = null;
-        String clouds = null;
-        String humidity = null;
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
 
@@ -122,16 +129,30 @@ public class RSSParser {
                 String name = parser.getName();
 
                 try {
-                    if (name.equals("country")) {
-                        country = parser.nextText();
-                    } else if (name.equals("city")) {
-                        city = parser.getAttributeValue(null, "name");
-                    } else if (name.equals("temperature")) {
-                        temperature = parser.getAttributeValue(null, "value");
-                    } else if (name.equals("clouds")) {
-                        clouds = parser.getAttributeValue(null, "name");
-                    } else if (name.equals("humidity")) {
-                        humidity = parser.getAttributeValue(null, "value");
+                    switch (name) {
+                        case "country":
+                            country = parser.nextText();
+                            break;
+                        case "city":
+                            city = parser.getAttributeValue(null, "name");
+                            break;
+                        case "lastupdate":
+                            date = parser.getAttributeValue(null, "value");
+                            break;
+                        case "temperature":
+                            temperature = parser.getAttributeValue(null, "value");
+                            minTemperature = parser.getAttributeValue(null, "min");
+                            maxTemperature = parser.getAttributeValue(null, "max");
+                            break;
+                        case "clouds":
+                            skyState = parser.getAttributeValue(null, "name");
+                            break;
+                        case "humidity":
+                            humidity = parser.getAttributeValue(null, "value");
+                            break;
+                        case "pressure":
+                            pressure = parser.getAttributeValue(null, "value");
+                            break;
                     }
                 } catch (XmlPullParserException e) {
                     e.printStackTrace();
@@ -152,7 +173,7 @@ public class RSSParser {
             }
         }
 
-        currentWeather = new WeatherFeed(country, city, temperature, clouds, humidity);
+        currentWeather = new WeatherFeed(country, city, date, temperature, temperatureUnit, skyState, maxTemperature, minTemperature, humidity, pressure);
 
         return currentWeather;
     }
