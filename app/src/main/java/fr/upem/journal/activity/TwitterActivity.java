@@ -54,6 +54,7 @@ public class TwitterActivity extends AppCompatActivity {
     TwitterSession session;
     private TwitterAuthClient authClient;
 
+
     private ActionBarDrawerToggle getDrawerToggle(){
         return new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
             @Override
