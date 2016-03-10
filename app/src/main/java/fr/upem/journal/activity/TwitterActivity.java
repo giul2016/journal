@@ -34,7 +34,7 @@ import fr.upem.journal.adapter.TwitterPagerAdapter;
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterActivity extends AppCompatActivity {
-
+    public static Twitter twitter;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -47,6 +47,7 @@ public class TwitterActivity extends AppCompatActivity {
     private TwitterLoginButton loginButton;
     TextView textView;
     TwitterSession session;
+
 
     private ActionBarDrawerToggle getDrawerToggle(){
         return new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
