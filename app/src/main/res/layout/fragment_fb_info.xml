@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+   <TableRow android:layout_width="fill_parent"
+       android:layout_height="fill_parent">
+
+       <com.facebook.login.widget.LoginButton
+           android:id="@+id/login_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:layout_gravity="center"
+           android:layout_column="1" />
+   </TableRow>
+
+    <TableRow android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/name"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:layout_span="4"/>
+    </TableRow>
+    <TableRow>
+        <com.facebook.login.widget.ProfilePictureView
+            android:id="@+id/picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="4"
+            android:layout_gravity="center">
+        </com.facebook.login.widget.ProfilePictureView>
+    </TableRow>
+
+    <TableRow>
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_photo_bttn" android:text="@string/fb_share_photo" />
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_video_bttn" android:text="@string/fb_share_video" />
+        <com.facebook.share.widget.ShareButton android:id="@+id/post_link_bttn" android:text="@string/fb_share_link"/>
+    </TableRow>
+    <TableRow>
+        <ListView
+            android:layout_span="4"
+            android:id="@+id/listView">
+
+        </ListView>
+
+    </TableRow>
+    </TableLayout>

@@ -22,9 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.WebActivity" />
-        <activity
-            android:name=".activity.FacebookActivity"
-            android:label="@string/facebook" />
+
         <activity
             android:name=".activity.TwitterActivity"
             android:label="@string/twitter" />
@@ -38,7 +36,6 @@
         </activity>
         <activity android:name=".activity.EditCategoriesActivity" />
         <activity android:name=".activity.EditNewsFeedsActivity" />
-        <activity android:name=".activity.AddNewCategoryActivity" />
 
         <service
             android:name=".service.NotificationService"
@@ -55,7 +52,29 @@
         <receiver
             android:name=".receiver.AlarmReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true"/>
+        <activity
+            android:name=".activity.FacebookActivity"
+            android:label="@string/facebook" />
+        <activity android:name=".activity.FbPageFeed" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider185863238451126"
+            android:exported="true" />
+
+        <activity android:name=".activity.FbPage" />
+        <activity android:name=".activity.FbComment"/>
     </application>
 
 </manifest>

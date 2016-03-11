@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TableRow>
+            <!--<TextView-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:id="@+id/pageName"-->
+                <!--android:textSize="32sp"/>-->
+        </TableRow>
+        <TableRow>
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/pageFeedLV"
+                android:textSize="14sp">
+
+            </ListView>
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

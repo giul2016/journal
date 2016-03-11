@@ -21,7 +21,7 @@
             android:key="time_picker"
             android:title="Add a notification hour"
             android:defaultValue="8:00" />
-
     </PreferenceCategory>
+
 
 </PreferenceScreen>
