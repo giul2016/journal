@@ -17,7 +17,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -42,14 +41,12 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
     public void notifyDataSetInvalidated() {
         super.notifyDataSetInvalidated();
     }
-    
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final FbUserFeed feed = getItem(position);
         if (convertView == null) {
-
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_user_feed_fb, parent, false);
-
         }
         convertView.setTag(position);
 
@@ -60,7 +57,6 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         tvTotalComment = (TextView) convertView.findViewById(R.id.user_feed_total_comment_tv);
         tvTotalComment.setTag(position);
         TextView tvCreatedTime = (TextView) convertView.findViewById(R.id.user_feed_created_time_tv);
-
         //endregion init
 
         //region get mess, photo,..
@@ -85,45 +81,39 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         //endregion get mess, photo,..
 
         //region get Comments, Likes
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/" + feed.getID(),
+        GraphRequest request = GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(), "/" + feed.getID(),
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
+                        JSONObject object = response.getJSONObject();
 
                         //region get Likes
-                        try {
-                            JSONObject object = response.getJSONObject();
-                            if (object != null) {
-                                JSONObject feed1 = object.getJSONObject("likes");
-
-                                JSONArray array1 = feed1.getJSONArray("data");
-                                tvTotalLike.setText(String.valueOf(array1.length()) + " ");
-                            } else
-                                tvTotalLike.setText(" 0");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        tvTotalLike.setText("0");
+                        if (object != null) {
+                            JSONObject likes = object.optJSONObject("likes");
+                            if (likes != null) {
+                                JSONArray likesData = likes.optJSONArray("data");
+                                if (likesData != null) {
+                                    tvTotalLike.setText(String.valueOf(likesData.length()) + " ");
+                                }
+                            }
                         }
                         //endregion get Likes
 
                         //region get Comments
-                        try {
-                            JSONObject object = response.getJSONObject();
-                            if (object != null) {
-                                JSONObject feed2 = object.getJSONObject("comments");
-
-                                JSONArray array2 = feed2.getJSONArray("data");
-                                tvTotalComment.setText(String.valueOf(array2.length()) + " comments");
-
-                            } else {
-                                tvTotalComment.setText(" 0 comment");
+                        tvTotalComment.setText(" 0 comment");
+                        if (object != null) {
+                            JSONObject comments = object.optJSONObject("comments");
+                            if (comments != null) {
+                                JSONArray commentsData = comments.optJSONArray("data");
+                                if (commentsData != null) {
+                                    tvTotalComment.setText(String.valueOf(commentsData.length()) + " comments");
+                                }
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            //endregion get Comments
                         }
-                        //endregion get Comments
                     }
+
                 });
 
         Bundle parameters = new Bundle();
