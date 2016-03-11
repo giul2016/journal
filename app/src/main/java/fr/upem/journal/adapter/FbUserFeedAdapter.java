@@ -2,9 +2,6 @@ package fr.upem.journal.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,18 +15,15 @@ import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
 import fr.upem.journal.activity.FbComment;
-import fr.upem.journal.database.FbPageFeed;
 import fr.upem.journal.database.FbUserFeed;
 
 /**
@@ -48,13 +42,9 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
     public void notifyDataSetInvalidated() {
         super.notifyDataSetInvalidated();
     }
-
-
-
+    
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
-
         final FbUserFeed feed = getItem(position);
         if (convertView == null) {
 
@@ -62,7 +52,6 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
 
         }
         convertView.setTag(position);
-
 
         //region init
         TextView tvMess = (TextView) convertView.findViewById(R.id.user_feed_message_tv);
@@ -81,20 +70,19 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                     .into(picture);
             tvMess.setText(feed.getLink());
         }
-        if ((feed.getPicture() != null) & (feed.getPicture() != " ")) {
+        if ((feed.getPicture() != null) && (!feed.getPicture().equals(" "))) {
             Glide.with(getContext())
                     .load(feed.getPicture())
                     .into(picture);
         }
-        if ((feed.getMessage() != null) & (feed.getMessage() != " ")) {
+        if ((feed.getMessage() != null) && (!feed.getMessage().equals(" "))) {
             tvMess.setText(feed.getMessage());
         } else tvMess.setText("");
 
         if (feed.getMessage() != null) {
-            tvCreatedTime.setText(feed.getCreated_time());
+            tvCreatedTime.setText(feed.getCreatedTime());
         } else tvCreatedTime.setText("");
         //endregion get mess, photo,..
-
 
         //region get Comments, Likes
         GraphRequest request = GraphRequest.newGraphPathRequest(
@@ -113,7 +101,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                                 JSONArray array1 = feed1.getJSONArray("data");
                                 tvTotalLike.setText(String.valueOf(array1.length()) + " ");
                             } else
-                                tvTotalLike.setText(" 0" );
+                                tvTotalLike.setText(" 0");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -128,7 +116,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
                                 JSONArray array2 = feed2.getJSONArray("data");
                                 tvTotalComment.setText(String.valueOf(array2.length()) + " comments");
 
-                            }else {
+                            } else {
                                 tvTotalComment.setText(" 0 comment");
                             }
                         } catch (JSONException e) {
@@ -150,7 +138,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
             public void onClick(View v) {
 
                 Log.e("abc", String.valueOf(v.getTag()));
-                Log.e("abc", feed.getID()+feed.getMessage());
+                Log.e("abc", feed.getID() + feed.getMessage());
                 Intent intent = new Intent(getContext(), FbComment.class);
                 intent.putExtra("feedId", feed.getID());
                 getContext().startActivity(intent);
@@ -158,10 +146,7 @@ public class FbUserFeedAdapter extends ArrayAdapter<FbUserFeed> {
         });
         //endregion view Comments
 
-
         return convertView;
     }
-
-
 
 }
