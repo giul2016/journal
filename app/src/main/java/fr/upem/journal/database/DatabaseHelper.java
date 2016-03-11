@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import fr.upem.journal.newsfeed.NewsCategory;
 import fr.upem.journal.newsfeed.NewsFeed;
 
+/**
+ * Class containing helper methods to access the data present in the database
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Journal.db";
@@ -34,6 +37,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Insert a news feed into the database
+     * @param newsFeed the news feed to add to the database
+     * @param category the title of the category
+     * @return true if the news feed was successfully inserted, false otherwise
+     */
     public boolean insertNewsFeed(NewsFeed newsFeed, String category) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -51,6 +60,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Remove a news feed from the database
+     * @param label the label of the news feed to remove
+     * @return true if the news feed was successfully removed, false otherwise
+     */
     public boolean removeNewsFeed(String label) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -64,6 +78,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Insert a news category into the database
+     * @param newsCategory the news category to add to the database
+     * @return true if the news category was successfully inserted, false otherwise
+     */
     public boolean insertNewsCategory(NewsCategory newsCategory) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -85,6 +104,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Remove a news category from the database
+     * @param newsCategory the news category to remove
+     * @return true if the news category was successfully removed, false otherwise
+     */
     public boolean removeNewsCategory(NewsCategory newsCategory) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -102,6 +126,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Select all the news categories present in the database
+     * @return an ArrayList containing all the categories
+     */
     public ArrayList<NewsCategory> selectNewsCategories() {
         String query = "SELECT * FROM " + DatabaseContract.NewsCategory.TABLE_NAME;
 
@@ -124,6 +152,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newsCategories;
     }
 
+    /**
+     * Select all the news feeds of a specific category
+     * @param categoryTitle the title of the category
+     * @return an ArrayList containing all the feeds of a category
+     */
     public ArrayList<NewsFeed> selectNewsFeedsByCategory(String categoryTitle) {
         String query = "SELECT * FROM " + DatabaseContract.NewsFeed.TABLE_NAME + " WHERE " + DatabaseContract
                 .NewsFeed.COLUMN_NAME_CATEGORY + " = \"" + categoryTitle + "\"";
@@ -144,6 +177,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newsFeeds;
     }
 
+    /**
+     * Initialize the database on the first use of the app
+     */
     public void initialData() {
 
         NewsCategory general = new NewsCategory("General");
