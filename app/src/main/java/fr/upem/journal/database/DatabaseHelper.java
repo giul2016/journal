@@ -124,6 +124,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newsCategories;
     }
 
+    public ArrayList<NewsCategory> selectNewsCategoriesNotEmpty() {
+        String query = "SELECT * FROM " + DatabaseContract.NewsCategory.TABLE_NAME;
+
+        ArrayList<NewsCategory> newsCategories = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String title = cursor.getString(cursor.getColumnIndex(DatabaseContract.NewsCategory.COLUMN_NAME_TITLE));
+                NewsCategory newsCategory = new NewsCategory(title);
+                ArrayList<NewsFeed> newsFeeds = selectNewsFeedsByCategory(newsCategory.getTitle());
+                for (NewsFeed newsFeed : newsFeeds) {
+                    newsCategory.addFeed(newsFeed);
+                }
+                if(!newsCategory.getFeeds().isEmpty()) {
+                    newsCategories.add(newsCategory);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return newsCategories;
+    }
+
     public ArrayList<NewsFeed> selectNewsFeedsByCategory(String categoryTitle) {
         String query = "SELECT * FROM " + DatabaseContract.NewsFeed.TABLE_NAME + " WHERE " + DatabaseContract
                 .NewsFeed.COLUMN_NAME_CATEGORY + " = \"" + categoryTitle + "\"";
