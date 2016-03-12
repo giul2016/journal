@@ -13,6 +13,10 @@
     <string name="prefNotificationSelectedHoursKey">notification_hours</string>
     <string name="prefNotificationAllHoursKey">notification_all_hours</string>
 
+    <string name="prefCatOther">Other</string>
+    <string name="prefHideEmptyCatKey">empty_cat_active</string>
+    <string name="prefHideEmptyCatTitle">Hide empty categories</string>
+
     <string name="actionSettings">Settings</string>
     <string name="actionEditCategories">Edit Categories</string>
     <string name="actionAddCategory">Add Category</string>

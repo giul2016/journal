@@ -23,5 +23,14 @@
             android:defaultValue="8:00" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="catOther"
+        android:title="@string/prefCatOther">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/prefHideEmptyCatKey"
+            android:title="@string/prefHideEmptyCatTitle"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>
