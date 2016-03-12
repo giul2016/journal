@@ -17,6 +17,9 @@ import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.database.DatabaseHelper;
 import fr.upem.journal.newsfeed.NewsCategory;
 
+/**
+ * Fragment where we can add and remove Categories
+ */
 public class EditCategoriesFragment extends Fragment {
 
     public interface OnItemSelectedListener {
@@ -74,12 +77,20 @@ public class EditCategoriesFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to add category in the list
+     * @param categoryTitle The category title
+     */
     public void addCategoryTitle(String categoryTitle) {
         categoryTitles.add(categoryTitle);
         adapter.notifyDataSetChanged();
         NewsFeedActivity.refresh();
     }
 
+    /**
+     * Method to remove category from the list
+     * @param categoryTitle The category title
+     */
     public void removeCategoryTitle(String categoryTitle) {
         categoryTitles.remove(categoryTitle);
         adapter.notifyDataSetChanged();
