@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/itemThumbnail"
         android:layout_toRightOf="@id/itemThumbnail"
+        android:maxLines="1"
         android:textStyle="bold"/>
 
     <TextView
@@ -24,7 +25,6 @@
         android:layout_marginTop="1dp"
         android:layout_toRightOf="@id/itemThumbnail"
         android:ellipsize="end"
-        android:maxLength="140"
         android:maxLines="1"/>
 
     <TextView
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/itemThumbnail"
         android:layout_toRightOf="@id/itemThumbnail"
+        android:maxLines="1"
         android:textStyle="italic"/>
 
 </RelativeLayout>
