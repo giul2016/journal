@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -150,6 +151,11 @@ public class NewsFeedActivity extends AppCompatActivity {
     private ArrayList<NewsCategory> loadDataFromDatabase() {
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(preferences.getBoolean(getResources().getString(R.string.prefHideEmptyCatKey), true)) {
+            return databaseHelper.selectNewsCategoriesNotEmpty();
+        }
         return databaseHelper.selectNewsCategories();
     }
 
