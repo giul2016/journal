@@ -41,6 +41,10 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d("PREFS", key + " has changed");
 
+        if(key.equals("empty_cat_active")){
+            NewsFeedActivity.refresh();
+        }
+
         String prefNotificationSelectedHoursKey = getResources().getString(R.string.prefNotificationSelectedHoursKey);
         String prefNotificationActiveKey = getResources().getString(R.string.prefNotificationActiveKey);
 
