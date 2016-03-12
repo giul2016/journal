@@ -15,7 +15,6 @@ import fr.upem.journal.fragment.TwitterTweetsFragment;
 import fr.upem.journal.fragment.TwitterUserInfoFragment;
 import fr.upem.journal.service.TwitterFollowersService;
 
-
 /**
  * Created by TTTH on 3/1/2016.
  */

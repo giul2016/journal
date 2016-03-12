@@ -25,7 +25,6 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
@@ -36,7 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import fr.upem.journal.R;
 import fr.upem.journal.adapter.TwitterPagerAdapter;
 import fr.upem.journal.service.TwitterFollowersService;
-
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterActivity extends AppCompatActivity {
@@ -53,7 +51,6 @@ public class TwitterActivity extends AppCompatActivity {
     TextView textView;
     TwitterSession session;
     private TwitterAuthClient authClient;
-
 
     private ActionBarDrawerToggle getDrawerToggle(){
         return new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose) {
@@ -130,14 +127,13 @@ public class TwitterActivity extends AppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         drawerToggle.syncState();
-    }
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig =  new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-
         Fabric.with(this, new Twitter(authConfig));
 
         setContentView(R.layout.activity_twitter);
@@ -183,7 +179,6 @@ public class TwitterActivity extends AppCompatActivity {
 
             @Override
             public void failure(TwitterException exception) {
-                findViewById(R.id.twitter_login_button).setVisibility(View.VISIBLE);
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
         });
