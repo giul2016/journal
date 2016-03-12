@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+/**
+ * Class representing a news item
+ */
 public class NewsFeedItem implements Parcelable {
 
     private final String title;
@@ -13,6 +16,14 @@ public class NewsFeedItem implements Parcelable {
     private final Date pubDate;
     private final String source;
 
+    /**
+     *
+     * @param title Title of the news
+     * @param description Description of the news
+     * @param link Link of the news
+     * @param pubDate Publication date of the news
+     * @param source Source of the news
+     */
     public NewsFeedItem(String title, String description, String link, Date pubDate, String source) {
         this.title = title;
         this.description = description;
@@ -21,10 +32,18 @@ public class NewsFeedItem implements Parcelable {
         this.source = source;
     }
 
+    /**
+     * Getter for the title
+     * @return
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Getter for the description
+     * @return
+     */
     public String getDescription() {
         return description;
     }
@@ -33,10 +52,18 @@ public class NewsFeedItem implements Parcelable {
         return link;
     }
 
+    /**
+     * Getter for the publication date
+     * @return
+     */
     public Date getPubDate() {
         return pubDate;
     }
 
+    /**
+     * Getter for the source
+     * @return
+     */
     public String getSource() {
         return source;
     }
