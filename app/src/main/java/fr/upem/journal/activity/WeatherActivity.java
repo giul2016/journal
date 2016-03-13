@@ -191,6 +191,19 @@ public class WeatherActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Updates every widget from the activity
+     * @param country
+     * @param city
+     * @param date
+     * @param temperature
+     * @param temperatureUnit
+     * @param skyState
+     * @param maxTemperature
+     * @param minTemperature
+     * @param humidity
+     * @param pressure
+     */
     public void updateDisplay(String country, String city, String date, String temperature, String temperatureUnit, String skyState, String maxTemperature, String minTemperature, String humidity, String pressure) {
         this.cityTextView.setText(city);
         this.dateTextView.setText(date);
@@ -204,6 +217,10 @@ public class WeatherActivity extends AppCompatActivity {
         searchConditionImage();
     }
 
+    /**
+     * Updates every widgets from the activity
+     * @param weatherFeed
+     */
     public void updateDisplay(WeatherFeed weatherFeed) {
         this.cityTextView.setText(weatherFeed.getCity());
         this.dateTextView.setText(weatherFeed.getDate());

@@ -5,9 +5,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
-/**
- * Created by martine on 10/03/2016.
- */
+
 public class LocationService implements LocationListener {
     // Paris by default
     private double latitude = 48.85;

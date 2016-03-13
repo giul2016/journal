@@ -92,6 +92,11 @@ public class RSSParser {
         return items;
     }
 
+    /**
+     * Parses an xml file containing the information about the weather
+     * @param rssInputStream the file to parse
+     * @return a <bold>weatherFeed</bold> object gathering all weather informations
+     */
     public static WeatherFeed parseWeather(InputStream rssInputStream) {
 
         String country = null;

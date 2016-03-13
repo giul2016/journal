@@ -8,14 +8,12 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import fr.upem.journal.activity.WeatherActivity;
 import fr.upem.journal.newsfeed.WeatherFeed;
 import fr.upem.journal.utils.RSSParser;
 
 
 public class WeatherService {
 
-    private String dumb;
     private String location;
     private String temperatureUnit;
 
@@ -23,15 +21,32 @@ public class WeatherService {
 
     }
 
+    /**
+     * Gets the current location
+     * @return the location
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Gets the temperature unit
+     * @return the temperature unit
+     */
     public String getTemperatureUnit() {
         return temperatureUnit;
     }
 
+    /**
+     * Upload the weather informations with the specified location and temperature unit
+     * @param location the location
+     * @param temperatureUnit the temperature unit
+     * @return an async task fetching the weather information
+     */
     public AsyncTask<String, Void, WeatherFeed> refreshWeather(final String location, final String temperatureUnit) {
+        this.location = location;
+        this.temperatureUnit = temperatureUnit;
+
         return new AsyncTask<String, Void, WeatherFeed>() {
 
             @Override
@@ -40,10 +55,10 @@ public class WeatherService {
 
                 try {
                     weatherFeed = download(location, temperatureUnit);
-
                 } catch (IOException e) {
                     Log.e("DEBUG WEATHER", "Error while fetching rss feed data");
                 }
+
                 return weatherFeed;
             }
 
