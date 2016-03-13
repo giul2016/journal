@@ -3,7 +3,6 @@ package fr.upem.journal.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -29,18 +28,15 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import fr.upem.journal.R;
 import fr.upem.journal.adapter.TwitterPagerAdapter;
 import fr.upem.journal.service.TwitterFollowersService;
+import fr.upem.journal.task.TwitterFollowersTask;
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterActivity extends AppCompatActivity {
     private static final String TWITTER_KEY = "pB6KGJc38BAKiAYU1pkm9Jjne";
     private static final String TWITTER_SECRET = "wJdqiIuZZEQktaSrCGBYvWOPL5EFJXfGqIWkqWG8QRXh6Ua6zu";
-    public static final AtomicBoolean FOLLOWERS_DOWNLOADED = new AtomicBoolean(false);
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -49,7 +45,6 @@ public class TwitterActivity extends AppCompatActivity {
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
 
     TextView textView;
-    TwitterSession session;
     private TwitterAuthClient authClient;
 
     private ActionBarDrawerToggle getDrawerToggle(){
@@ -103,31 +98,17 @@ public class TwitterActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if( session == null){
-            return ;
-        }
-
-        //Save ID and NAME in android's datas
-        outState.putLong("USER_ID",session.getUserId());
-        outState.putString("USER_NAME", session.getUserName());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-     /*   if( savedInstanceState != null && savedInstanceState.containsKey("USER_ID") && savedInstanceState.containsKey("USER_NAME") ){
-            findViewById(R.id.twitter_login_button).setVisibility(View.GONE);
-            session = new TwitterSession(new TwitterAuthToken(TWITTER_KEY,TWITTER_SECRET), savedInstanceState.getLong("USER_ID"), savedInstanceState.getString("USER_NAME") );
-            followersService = new TwitterFollowersService(session,session.getUserId());
-        }*/
     }
 
     @Override
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         drawerToggle.syncState();
-
     }
 
     @Override
@@ -156,59 +137,44 @@ public class TwitterActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.tv_username);
 
-        // loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
-        //callbackTwitterButton();
-
         if( Twitter.getSessionManager().getActiveSession() == null){
-            initAuthClient(this);
+            initAuthClient();
         }
         else{
-            instantiatePageAdapter( Twitter.getSessionManager().getActiveSession() );
+            instantiatePageAdapter(Twitter.getSessionManager().getActiveSession());
         }
 
     }
 
-    private void initAuthClient(final TwitterActivity main){
+    private void initAuthClient(){
         authClient = new TwitterAuthClient();
-        authClient.authorize(this, new Callback<TwitterSession>() {
+        authClient.authorize(this,new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Twitter.getSessionManager().setActiveSession(result.data);
-                instantiatePageAdapter(result.data);
+                Twitter.getSessionManager().setActiveSession( result.data );
+                instantiatePageAdapter( result.data );
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
-        });
+        } );
     }
 
     private void instantiatePageAdapter(TwitterSession session){
         final TwitterFollowersService service = new TwitterFollowersService( session );
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!TwitterActivity.FOLLOWERS_DOWNLOADED.get()) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+        new TwitterFollowersTask((ViewPager) findViewById(R.id.viewpager_twitter),
+                (TabLayout) findViewById(R.id.sliding_tabs_twitter),
+                service, getSupportFragmentManager()).execute(this);
 
-                TwitterActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
-                        viewPager.setAdapter(new TwitterPagerAdapter(service, getSupportFragmentManager(), TwitterActivity.this));
-                        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
-                        tabLayout.setupWithViewPager(viewPager);
-                    }
-                });
-            }
-        }).start();
+
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
+        viewPager.setAdapter(new TwitterPagerAdapter(service, getSupportFragmentManager()));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs_twitter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

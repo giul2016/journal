@@ -14,14 +14,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.upem.journal.activity.TwitterActivity;
+import fr.upem.journal.task.TwitterFollowersTask;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
-/**
- * Created by yann on 11/03/16.
- */
+
 public class TwitterFollowersService {
+    /**
+     * Followers contain the list of friends
+     */
     private class Followers {
         @SerializedName("users")
         public final List<User> users;
@@ -31,16 +32,26 @@ public class TwitterFollowersService {
         }
     }
 
+    /**
+     * JournalTwitterApiClient extends TwitterApiClient for generate the GET request to twitter service
+     */
     private class JournalTwitterApiClient extends TwitterApiClient {
         public JournalTwitterApiClient(TwitterSession session) {
             super(session);
         }
 
+        /**
+         * Get the result of GET request
+         * @return CustomService, the result of GET request
+         */
         public CustomService getCustomService() {
             return getService(CustomService.class);
         }
     }
 
+    /**
+     * Interface of GET request to twitter
+     */
     interface CustomService {
         @GET("/1.1/friends/list.json")
         void show(@Query("user_id") Long userId, @Query("screen_name") String
@@ -49,33 +60,35 @@ public class TwitterFollowersService {
 
     private List<User> users = new ArrayList<>();
 
+    /**
+     * Constructor of TwitterFollowersService
+     * @param session, the current session
+     */
     public TwitterFollowersService(TwitterSession session) {
 
-            JournalTwitterApiClient client = new JournalTwitterApiClient(session);
-            client.getCustomService().show(session.getUserId(), null, true, true, 100, new Callback<Followers>() {
-                @Override
-                public void success(Result<Followers> result) {
-                    for (User user : result.data.users) {
-                        System.err.println(user.name + "  <=>  " + user.getId());
-                        users.add(user);
-                    }
-                    TwitterActivity.FOLLOWERS_DOWNLOADED.set(true);
+        JournalTwitterApiClient client = new JournalTwitterApiClient(session);
+        client.getCustomService().show(session.getUserId(), null, true, true, 100, new Callback<Followers>() {
+            @Override
+            public void success(Result<Followers> result) {
+                for (User user : result.data.users) {
+                    users.add(user);
                 }
+                TwitterFollowersTask.FOLLOWERS_DOWNLOADED.set(true);
+            }
 
-                @Override
-                public void failure(TwitterException e) {
-                    Log.e("Twitter followers", "Failure of request");
-                }
-            });
-
+            @Override
+            public void failure(TwitterException e) {
+                Log.e("Twitter followers", "Failure of request");
+            }
+        });
     }
 
+    /**
+     * Get current user's list of followers
+     * @return unmodifiable list of followers
+     */
     public List<User> getFollowers() {
-            System.err.println("MY FOLLOWERS");
-            for (User user : users) {
-                System.err.println(user.idStr);
-            }
-            return Collections.unmodifiableList(users);
+        return Collections.unmodifiableList(users);
     }
 
 }
