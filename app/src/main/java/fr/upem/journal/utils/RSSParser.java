@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.upem.journal.newsfeed.NewsFeedItem;
+import fr.upem.journal.newsfeed.WeatherFeed;
 
 
 public class RSSParser {
@@ -89,5 +90,95 @@ public class RSSParser {
         }
 
         return items;
+    }
+
+    /**
+     * Parses an xml file containing the information about the weather
+     * @param rssInputStream the file to parse
+     * @return a <bold>weatherFeed</bold> object gathering all weather informations
+     */
+    public static WeatherFeed parseWeather(InputStream rssInputStream) {
+
+        String country = null;
+        String city = null;
+        String date = null;
+        String temperature = null;
+        String temperatureUnit = null;
+        String skyState = null;
+        String maxTemperature = null;
+        String minTemperature = null;
+        String humidity = null;
+        String pressure = null;
+
+        WeatherFeed currentWeather = null;
+
+        int eventType;
+
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(rssInputStream, UTF8);
+        } catch (XmlPullParserException e) {
+            return null;
+        }
+
+        try {
+            eventType = parser.getEventType();
+        } catch (XmlPullParserException e) {
+            eventType = XmlPullParser.END_DOCUMENT;
+        }
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String name = parser.getName();
+
+                try {
+                    switch (name) {
+                        case "country":
+                            country = parser.nextText();
+                            break;
+                        case "city":
+                            city = parser.getAttributeValue(null, "name");
+                            break;
+                        case "lastupdate":
+                            date = parser.getAttributeValue(null, "value");
+                            break;
+                        case "temperature":
+                            temperature = parser.getAttributeValue(null, "value");
+                            minTemperature = parser.getAttributeValue(null, "min");
+                            maxTemperature = parser.getAttributeValue(null, "max");
+                            break;
+                        case "clouds":
+                            skyState = parser.getAttributeValue(null, "name");
+                            break;
+                        case "humidity":
+                            humidity = parser.getAttributeValue(null, "value");
+                            break;
+                        case "pressure":
+                            pressure = parser.getAttributeValue(null, "value");
+                            break;
+                    }
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (eventType == XmlPullParser.END_TAG) {
+                // NOTHING TO DO
+            }
+
+            try {
+                eventType = parser.next();
+            } catch (XmlPullParserException e) {
+                eventType = XmlPullParser.END_DOCUMENT;
+            } catch (IOException e) {
+                eventType = XmlPullParser.END_DOCUMENT;
+            }
+        }
+
+        currentWeather = new WeatherFeed(country, city, date, temperature, temperatureUnit, skyState, maxTemperature, minTemperature, humidity, pressure);
+
+        return currentWeather;
     }
 }

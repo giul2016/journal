@@ -33,7 +33,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
-    private final String[] drawerItems = {"News", "Facebook", "Twitter", "Settings"};
+    private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -90,15 +90,29 @@ public class NewsFeedActivity extends AppCompatActivity {
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 1) {
-                    Intent intent = new Intent(NewsFeedActivity.this, FacebookActivity.class);
-                    startActivity(intent);
-                } else if (position == 2) {
-                    Intent intent = new Intent(NewsFeedActivity.this, TwitterActivity.class);
-                    startActivity(intent);
-                } else if (position == 3) {
-                    Intent intent = new Intent(NewsFeedActivity.this, SettingsActivity.class);
-                    startActivity(intent);
+                Intent intent;
+                switch (position) {
+                    case 0:
+                        // ALREADY SELECTED
+                        /*intent = new Intent(NewsFeedActivity.this, NewsFeedActivity.class);
+                        startActivity(intent);*/
+                        break;
+                    case 1:
+                        intent = new Intent(NewsFeedActivity.this, FacebookActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent(NewsFeedActivity.this, TwitterActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        intent = new Intent(NewsFeedActivity.this, WeatherActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 4:
+                        intent = new Intent(NewsFeedActivity.this, SettingsActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });

@@ -44,7 +44,7 @@ public class FetchRSSFeedTask extends AsyncTask<NewsFeed, Integer, List<NewsFeed
             connection.connect();
 
             int response = connection.getResponseCode();
-            Log.d("DEBUG", "The response is: " + response);
+            Log.d("DEBUG WEATHER", "The response is: " + response);
             inputStream = connection.getInputStream();
 
             //connection.disconnect();

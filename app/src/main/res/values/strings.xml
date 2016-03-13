@@ -6,7 +6,8 @@
 
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
-
+    <string name="weather">Weather</string>
+    
     <string name="prefCatNotifications">Notifications</string>
     <string name="prefNotificationsTitle">Activate notifications</string>
     <string name="prefNotificationActiveKey">notification_active</string>

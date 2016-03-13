@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+
 
     <application
         android:allowBackup="true"
@@ -26,7 +30,15 @@
         <activity
             android:name=".activity.TwitterActivity"
             android:label="@string/twitter" />
-        <activity android:name=".activity.SettingsActivity" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activity.WeatherActivity"
+            android:label="@string/weather">
+        </activity>
+        <activity android:name=".activity.SettingsActivity">
+        </activity>
+
         <activity
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".activity.NewsFeedActivity">
