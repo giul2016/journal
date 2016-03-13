@@ -2,14 +2,11 @@ package fr.upem.journal.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -24,7 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
-import fr.upem.journal.activity.FbPageFeed;
 import fr.upem.journal.adapter.PageAdapter;
 import fr.upem.journal.database.FbPage;
 
@@ -75,8 +71,9 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment {
 //region Functions
 
     private void getLikedPages() {
-        GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
+        facebookPage.clear();
+
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(final JSONObject object, GraphResponse response) {
@@ -94,25 +91,24 @@ public class FbLikedPagesFragment extends android.support.v4.app.Fragment {
                                             if (object != null) {
                                                 array = object.getJSONArray("data");
                                             }
-                                            ArrayList<String> pages_list = new ArrayList<String>();
 
                                             for (int i = 0; i < array.length(); i++) {
-                                                pages_list.add(((JSONObject) array.get(i)).optString("name"));
                                                 facebookPage.add(new FbPage((JSONObject) array.get(i)));
-
                                             }
-//                                            ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, pages_list);
+
                                             pagesList = (ListView) getView().findViewById(R.id.listView);
                                             PageAdapter adapter = new PageAdapter(getContext(), facebookPage);
                                             pagesList.setAdapter(adapter);
                                             pagesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 @Override
-                                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                public void onItemClick(AdapterView<?> parent, View view, int
+                                                        position, long id) {
 
-//                                                    Intent newIntent = new Intent(getActivity(),FbPageFeed.class);
-                                                    Intent newIntent = new Intent(getActivity(), fr.upem.journal.activity.FbPage.class);
+                                                    Intent newIntent = new Intent(getActivity(), fr.upem.journal
+                                                            .activity.FbPage.class);
                                                     newIntent.putExtra("pageId", facebookPage.get(position).getID());
-                                                    newIntent.putExtra("pageName", facebookPage.get(position).getName());
+                                                    newIntent.putExtra("pageName", facebookPage.get(position).getName
+                                                            ());
                                                     startActivity(newIntent);
 
                                                 }
