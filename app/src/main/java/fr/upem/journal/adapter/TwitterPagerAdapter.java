@@ -29,6 +29,7 @@ public class TwitterPagerAdapter extends  FragmentPagerAdapter {
     public TwitterPagerAdapter(TwitterFollowersService service, FragmentManager fm) {
         super(fm);
         this.tabTitles = service.getFollowers();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -38,10 +39,11 @@ public class TwitterPagerAdapter extends  FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position){
+        if( position < 0 ){
+            throw new IllegalStateException("Position is negative");
+        }
         if( position == 0 ){
-            TwitterUserInfoFragment userfrag = new TwitterUserInfoFragment();
-
-            return userfrag;
+            return new TwitterUserInfoFragment();
         }
         if( position > 0 && position < getCount()  ){
             TwitterTweetsFragment tfrag = new TwitterTweetsFragment();
@@ -58,8 +60,14 @@ public class TwitterPagerAdapter extends  FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        if( position < 0 ){
+            throw new IllegalStateException("Position is negative");
+        }
         if( position == 0 ){
             return "Infos";
+        }
+        if( tabTitles.get(position-1).name == null || tabTitles.get(position-1).name.isEmpty() ){
+            return "@";
         }
         return tabTitles.get(position-1).name;
     }

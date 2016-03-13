@@ -43,8 +43,8 @@ public class TwitterActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
     private final String[] drawerItems = {"News", "Facebook", "Twitter", "Weather", "Settings"};
+    private static TwitterFollowersService service;
 
-    TextView textView;
     private TwitterAuthClient authClient;
 
     private ActionBarDrawerToggle getDrawerToggle(){
@@ -96,13 +96,25 @@ public class TwitterActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if( !savedInstanceState.containsKey("FOLLOWERS_SERVICE") || Twitter.getSessionManager().getActiveSession() == null ){
+            return ;
+        }
+        service = (TwitterFollowersService) savedInstanceState.get("FOLLOWERS_SERVICE");
+        instantiatePageAdapter(Twitter.getSessionManager().getActiveSession());
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        if(  service == null ){
+            return ;
+        }
+
+        outState.putParcelable("FOLLOWERS_SERVICE", service);
     }
 
     @Override
@@ -135,8 +147,6 @@ public class TwitterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        textView = (TextView) findViewById(R.id.tv_username);
-
         if( Twitter.getSessionManager().getActiveSession() == null){
             initAuthClient();
         }
@@ -157,19 +167,19 @@ public class TwitterActivity extends AppCompatActivity {
 
             @Override
             public void failure(TwitterException exception) {
-                Log.d("TwitterKit", "Login with Twitter failure", exception);
+                Log.d("TwitterKit", "Login with Twitter failure");
             }
         } );
     }
 
     private void instantiatePageAdapter(TwitterSession session){
-        final TwitterFollowersService service = new TwitterFollowersService( session );
+        if( service ==  null) {
+            service = new TwitterFollowersService(session);
+        }
 
         new TwitterFollowersTask((ViewPager) findViewById(R.id.viewpager_twitter),
                 (TabLayout) findViewById(R.id.sliding_tabs_twitter),
                 service, getSupportFragmentManager()).execute(this);
-
-
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_twitter);
         viewPager.setAdapter(new TwitterPagerAdapter(service, getSupportFragmentManager()));

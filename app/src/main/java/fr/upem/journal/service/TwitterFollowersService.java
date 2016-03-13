@@ -1,5 +1,7 @@
 package fr.upem.journal.service;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
@@ -18,8 +20,36 @@ import fr.upem.journal.task.TwitterFollowersTask;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
+/**
+ * TwitterFollowersService make an request to twitter for obtain the followers list of current user
+ * This class implement Parcelable for can be save in parameter before a rotate of screen.
+ */
+public class TwitterFollowersService implements Parcelable{
+    private TwitterFollowersService(Parcel in) {
+    }
 
-public class TwitterFollowersService {
+    private static final Creator<TwitterFollowersService> CREATOR = new Creator<TwitterFollowersService>() {
+        @Override
+        public TwitterFollowersService createFromParcel(Parcel in) {
+            return new TwitterFollowersService(in);
+        }
+
+        @Override
+        public TwitterFollowersService[] newArray(int size) {
+            return new TwitterFollowersService[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        throw new UnsupportedOperationException("This method is not implemented");
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        throw new UnsupportedOperationException("This method is not implemented");
+    }
+
     /**
      * Followers contain the list of friends
      */

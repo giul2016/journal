@@ -5,8 +5,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 
-import com.twitter.sdk.android.core.models.User;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import fr.upem.journal.activity.TwitterActivity;
@@ -43,7 +41,6 @@ public class TwitterFollowersTask extends AsyncTask<TwitterActivity,Void,Void> {
         if(params.length != 1){
             return null;
         }
-        final User user;
         while (!FOLLOWERS_DOWNLOADED.get()) {
             try {
                 Thread.sleep(250);
