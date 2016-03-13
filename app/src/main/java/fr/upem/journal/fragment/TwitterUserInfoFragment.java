@@ -5,39 +5,50 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 
 import fr.upem.journal.R;
-import fr.upem.journal.activity.TwitterActivity;
+import fr.upem.journal.task.TwitterUserTask;
 
-
+/**
+ * TwitterUserInfoFragment display the user's data in layout
+ */
 public class TwitterUserInfoFragment extends ListFragment {
-
-    public static final String ARG_PAGE = "ARG_PAGE";
-    private User user;
-
-    public static TwitterUserInfoFragment newInstance(int page) {
-        Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
-        TwitterUserInfoFragment fragment = new TwitterUserInfoFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Twitter.getApiClient(Twitter.getSessionManager().getActiveSession()).getAccountService()
+                .verifyCredentials(true, false, new Callback<User>() {
+                    @Override
+                    public void success(Result<User> userResult) {
+                        TwitterUserTask.CURRENT_USER.set(userResult.data);
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+
+                    }
+
+                });
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        final View view = inflater.inflate(R.layout.fragment_twitter_user_info, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_twitter_user_info, container, false);
         return view;
     }
 
-    public void setUser(User user){
-        this.user = user;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        new TwitterUserTask(this).execute();
     }
-
 }

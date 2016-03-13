@@ -1,7 +1,6 @@
 package fr.upem.journal.adapter;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,23 +15,20 @@ import fr.upem.journal.fragment.TwitterUserInfoFragment;
 import fr.upem.journal.service.TwitterFollowersService;
 
 /**
- * Created by TTTH on 3/1/2016.
+ * TwitterPagerAdapter initialize all fragments
  */
 public class TwitterPagerAdapter extends  FragmentPagerAdapter {
-
     private final List<User> tabTitles;
 
-    //final int PAGE_COUNT = 2;
-    // private String tabTitles[] = new String[] { "Info", "Liked pages"};
-    private Context context;
-
-    public TwitterPagerAdapter(TwitterFollowersService service, FragmentManager fm, Context context) {
+    /**
+     * Constructor of TwitterPagerAdapter who manage all fragments
+     *
+     * @param service the followers service
+     * @param fm the fragment manager
+     */
+    public TwitterPagerAdapter(TwitterFollowersService service, FragmentManager fm) {
         super(fm);
-        this.context = context;
         this.tabTitles = service.getFollowers();
-
-        System.err.println(tabTitles.size());
-        System.err.println("\n\n\nICI\n\n\n");
     }
 
     @Override
@@ -43,12 +39,13 @@ public class TwitterPagerAdapter extends  FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position){
         if( position == 0 ){
-            return new TwitterUserInfoFragment();
+            TwitterUserInfoFragment userfrag = new TwitterUserInfoFragment();
+
+            return userfrag;
         }
         if( position > 0 && position < getCount()  ){
             TwitterTweetsFragment tfrag = new TwitterTweetsFragment();
             Bundle args = new Bundle();
-            System.err.println("J'envois ça +++" + args.toString());
             args.putLong("FOLLOWER_ID", tabTitles.get(position - 1).getId());
 
             tfrag.setArguments(args);
@@ -61,7 +58,6 @@ public class TwitterPagerAdapter extends  FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
         if( position == 0 ){
             return "Infos";
         }
