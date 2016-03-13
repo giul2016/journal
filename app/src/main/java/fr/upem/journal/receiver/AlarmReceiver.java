@@ -10,6 +10,9 @@ import android.support.v4.app.NotificationCompat;
 import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.service.NotificationService;
 
+/**
+ * The broadcast receiver wich is fire by the AlarmManager.
+ */
 public class AlarmReceiver extends BroadcastReceiver {
     public AlarmReceiver() {
     }
@@ -21,12 +24,14 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentTitle("Journal")
                 .setContentText("You have news to read !");
 
+        // creates the intent
         Intent notificationIntent = new Intent(context, NewsFeedActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         builder.setContentIntent(pendingIntent);
 
+        // launch the notification
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(intent.getIntExtra("id", 1), builder.build());
 

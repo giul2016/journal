@@ -19,6 +19,9 @@ import fr.upem.journal.R;
 import fr.upem.journal.preference.NotificationHoursPreference;
 import fr.upem.journal.receiver.AlarmReceiver;
 
+/**
+ * The service wich sets the alarm for notification
+ */
 public class NotificationService extends IntentService {
 
     private int nextNotificationId = 1;
@@ -29,6 +32,7 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        // prepare the pending intent
         Intent alarmIntent = new Intent(NotificationService.this, AlarmReceiver.class);
         intent.putExtra("id", nextNotificationId++);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationService.this, 0, alarmIntent, 0);
@@ -41,6 +45,7 @@ public class NotificationService extends IntentService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if(preferences.getBoolean(getResources().getString(R.string.prefNotificationActiveKey), true)) {
+            // if notifications are active set the next alarm
             try {
                 Calendar nextFiringCalendar = getNextFiringCalendar();
                 alarmManager.set(AlarmManager.RTC, nextFiringCalendar.getTimeInMillis(), pendingIntent);
@@ -54,7 +59,13 @@ public class NotificationService extends IntentService {
         }
     }
 
+    /**
+     * Retrieves list of hours from SharedPreferences.
+     * Then gets the next hour set to receive a notification.
+     * @return Calendar sets with the next firing hour.
+     */
     private Calendar getNextFiringCalendar() {
+        // initialize calendars
         Calendar currentCalendar = Calendar.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MINUTE, 0);
@@ -62,6 +73,7 @@ public class NotificationService extends IntentService {
 
         Log.d("ALARM", "current hour : " + currentCalendar.get(Calendar.HOUR_OF_DAY) + ":" + currentCalendar.get(Calendar.MINUTE) + ":" + currentCalendar.get(Calendar.SECOND));
 
+        // retrieves the hour's list
         ArrayList<Integer> notificationHours = new ArrayList<>();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> hours = preferences.getStringSet(getResources().getString(R.string.prefNotificationSelectedHoursKey), NotificationHoursPreference.DEF_VALUES);
@@ -71,6 +83,7 @@ public class NotificationService extends IntentService {
         }
         Collections.sort(notificationHours);
 
+        // tests the hours to get the next firing hour
         for(int hour : notificationHours) {
             Log.d("ALARM", "hour : "+hour);
             calendar.set(Calendar.HOUR_OF_DAY, hour);

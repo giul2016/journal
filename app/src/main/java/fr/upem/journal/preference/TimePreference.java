@@ -7,23 +7,41 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
+/**
+ * The dialog preference to add an hour to the notification hours list
+ */
 public class TimePreference extends DialogPreference {
     private int lastHour = 0;
     private int lastMinute = 0;
     private TimePicker picker = null;
 
+    /**
+     * Gets the hour
+     * @param time the time
+     * @return the hour
+     */
     public static int getHour(String time) {
         String[] pieces = time.split(":");
 
         return Integer.parseInt(pieces[0]);
     }
 
+    /**
+     * Gets the minute
+     * @param time the time
+     * @return the minutes
+     */
     public static int getMinute(String time) {
         String[] pieces = time.split(":");
 
         return Integer.parseInt(pieces[1]);
     }
 
+    /**
+     * Constructor.
+     * @param context the context
+     * @param attrs the attrs
+     */
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -31,6 +49,10 @@ public class TimePreference extends DialogPreference {
         setNegativeButtonText("Cancel");
     }
 
+    /**
+     * On dialog view creation creates the time picker and returns it.
+     * @return the view
+     */
     @Override
     protected View onCreateDialogView() {
         return picker = new TimePicker(getContext());
@@ -47,6 +69,7 @@ public class TimePreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
 
+        // when dialog is closed, the hour and minutes are retrieved from the time picker
         if (positiveResult) {
             lastHour = picker.getCurrentHour();
             lastMinute = picker.getCurrentMinute();
