@@ -324,11 +324,14 @@ public class WeatherActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_LOCATION_ACCESS);
         }
 
+        Location loc = null;
 
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 10, locationService);
-        Location loc  = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
+                .PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission
+                .ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 10, locationService);
+            loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
 
         String location = null;
         if (loc != null) {
