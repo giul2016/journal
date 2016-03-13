@@ -6,6 +6,9 @@ import android.content.Intent;
 
 import fr.upem.journal.service.NotificationService;
 
+/**
+ * The broadcast receiver wich launch the service on boot.
+ */
 public class BootReceiver extends BroadcastReceiver {
     public BootReceiver() {
     }

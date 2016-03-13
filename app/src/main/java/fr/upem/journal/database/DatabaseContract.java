@@ -14,6 +14,9 @@ public class DatabaseContract {
     private DatabaseContract() {
     }
 
+    /**
+     * Class representing the news-feed table in the database
+     */
     static class NewsFeed implements BaseColumns {
         static final String TABLE_NAME = "news_feed";
         static final String COLUMN_NAME_LABEL = "label";
@@ -31,6 +34,9 @@ public class DatabaseContract {
         static final String DROP_TABLE_NEWS_FEED = DROP_TABLE + TABLE_NAME;
     }
 
+    /**
+     * Class representing the news-category table in the database
+     */
     static class NewsCategory implements BaseColumns {
         static final String TABLE_NAME = "news_category";
         static final String COLUMN_NAME_TITLE = "title";

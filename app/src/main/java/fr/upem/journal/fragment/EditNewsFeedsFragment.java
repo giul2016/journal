@@ -16,6 +16,9 @@ import fr.upem.journal.activity.NewsFeedActivity;
 import fr.upem.journal.database.DatabaseHelper;
 import fr.upem.journal.newsfeed.NewsFeed;
 
+/**
+ * Fragment where we can add and remove feeds. Each feed is associated with category
+ */
 public class EditNewsFeedsFragment extends Fragment {
 
     private ListView listView;
@@ -60,6 +63,7 @@ public class EditNewsFeedsFragment extends Fragment {
         loadData();
     }
 
+    //load data from database
     private void loadData() {
         databaseHelper = new DatabaseHelper(getContext());
         ArrayList<NewsFeed> newsFeeds = databaseHelper.selectNewsFeedsByCategory(categoryTitle);
@@ -71,16 +75,23 @@ public class EditNewsFeedsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Method to add feed in the list
+     * @param label the label of the feed
+     */
     public void addNewsFeedLabel(String label) {
         newsFeedLabels.add(label);
         adapter.notifyDataSetChanged();
         NewsFeedActivity.refresh();
     }
 
+    /**
+     * Method to remove feed from the list
+     * @param label The label of the feed
+     */
     public void removeNewsFeedLabel(String label) {
         newsFeedLabels.remove(label);
         adapter.notifyDataSetChanged();
-
 
         if (!databaseHelper.removeNewsFeed(label)) {
             addNewsFeedLabel(label);

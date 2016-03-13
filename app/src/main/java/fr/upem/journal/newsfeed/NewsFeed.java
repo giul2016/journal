@@ -3,21 +3,36 @@ package fr.upem.journal.newsfeed;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
+/**
+ * Class representing a feed
+ */
 public class NewsFeed implements Parcelable {
 
     private String label;
     private String link;
 
+    /**
+     *
+     * @param label The label of the feed
+     * @param link The link of the feed
+     */
     public NewsFeed(String label, String link) {
         this.label = label;
         this.link = link;
     }
 
+    /**
+     * Getter for the label
+     * @return
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Getter for the link
+     * @return
+     */
     public String getLink() {
         return link;
     }
