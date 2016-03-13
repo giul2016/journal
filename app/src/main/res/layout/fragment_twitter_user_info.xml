@@ -3,11 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView android:id="@id/android:empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="No Tweets"/>
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:minHeight="120dp"
+        android:minWidth="120dp"
+        android:maxHeight="120dp"
+        android:maxWidth="120dp"
+        android:layout_marginTop="20dp" />
 
     <ListView android:id="@id/android:list"
         android:layout_width="match_parent"
@@ -16,5 +22,14 @@
         android:divider="#e1e8ed"
         android:dividerHeight="1dp"
         android:drawSelectorOnTop="false"/>
+
+    <TextView android:id="@+id/test"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="242dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="No data"
+        android:layout_weight="0.75"
+        android:layout_marginBottom="50dp" />
 
 </LinearLayout>
