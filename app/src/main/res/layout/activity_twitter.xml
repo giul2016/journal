@@ -21,6 +21,25 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+        <!-- <com.twitter.sdk.android.core.identity.TwitterLoginButton
+             android:id="@+id/twitter_login_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerInParent="true" /> -->
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs_twitter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_twitter"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="@android:color/white" />
+
     </LinearLayout>
 
     <ListView
@@ -32,5 +51,4 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"/>
-
 </android.support.v4.widget.DrawerLayout>

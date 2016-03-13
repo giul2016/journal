@@ -19,6 +19,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 
 import fr.upem.journal.newsfeed.NewsCategory;
@@ -28,6 +31,11 @@ import fr.upem.journal.database.DatabaseHelper;
 import fr.upem.journal.service.NotificationService;
 
 public class NewsFeedActivity extends AppCompatActivity {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "SZlOrdbRThfP6yiGt0qU40bUx";
+    private static final String TWITTER_SECRET = "jJ7rhkQ1x2ciKPzcsjPpo39hZZ2tT80oKau7JTxcwn2Vd0mBNr ";
+
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
