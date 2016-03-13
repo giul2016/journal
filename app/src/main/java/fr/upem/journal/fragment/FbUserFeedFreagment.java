@@ -2,12 +2,9 @@ package fr.upem.journal.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.facebook.AccessToken;
@@ -15,7 +12,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,10 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import fr.upem.journal.R;
-import fr.upem.journal.adapter.FbFeedAdapter;
 import fr.upem.journal.adapter.FbUserFeedAdapter;
-import fr.upem.journal.database.FbPage;
-import fr.upem.journal.database.FbPageFeed;
 import fr.upem.journal.database.FbUserFeed;
 
 /**
