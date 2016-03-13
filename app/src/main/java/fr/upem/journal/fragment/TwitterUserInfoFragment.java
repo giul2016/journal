@@ -2,6 +2,7 @@ package fr.upem.journal.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,20 +25,7 @@ public class TwitterUserInfoFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Twitter.getApiClient(Twitter.getSessionManager().getActiveSession()).getAccountService()
-                .verifyCredentials(true, false, new Callback<User>() {
-                    @Override
-                    public void success(Result<User> userResult) {
-                        TwitterUserTask.CURRENT_USER.set(userResult.data);
-                    }
-
-                    @Override
-                    public void failure(TwitterException e) {
-
-                    }
-
-                });
-
+        extractUserFromSession();
     }
 
     @Override
@@ -50,5 +38,25 @@ public class TwitterUserInfoFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         new TwitterUserTask(this).execute();
+    }
+
+    /**
+     * If an active session is in SessionManager, the method extract the current user associated at
+     * this.
+     */
+    public static void extractUserFromSession(){
+        Twitter.getApiClient(Twitter.getSessionManager().getActiveSession()).getAccountService()
+                .verifyCredentials(true, false, new Callback<User>() {
+                    @Override
+                    public void success(Result<User> userResult) {
+                        TwitterUserTask.CURRENT_USER.set(userResult.data);
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+                        Log.d("TwitterSession", "Can't found the current user from active session");
+                    }
+
+                });
     }
 }

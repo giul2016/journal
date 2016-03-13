@@ -3,9 +3,11 @@ package fr.upem.journal.task;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.models.User;
 
 import java.io.IOException;
@@ -34,26 +36,29 @@ public class TwitterUserTask extends AsyncTask<Void,Void,Void>{
 
     @Override
     protected Void doInBackground(Void... params) {
+        int count = 1;
 
-
-        while(TwitterUserTask.CURRENT_USER.get() == null){
+        while( TwitterUserTask.CURRENT_USER.get() == null ){
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if( (count++)%4 == 0){
+                TwitterUserInfoFragment.extractUserFromSession();
             }
         }
         User user = TwitterUserTask.CURRENT_USER.get();
 
         final StringBuilder list = new StringBuilder();
         list.append("Your name : ").append(user.name).append('\n');
-        list.append("Your screen Name : ").append(user.screenName).append('\n');
+        list.append("Your screenName : ").append(user.screenName).append('\n');
         list.append("Description : ").append( (user.description.isEmpty())?"no data":user.description ).append('\n');
         list.append("Number of friends : ").append(user.friendsCount).append('\n');
         list.append("Number of followers : ").append(user.followersCount).append('\n');
 
         try {
-            final Bitmap image = getBitmapFromURL(user.profileImageUrl);
+            final Bitmap image = getBitmapFromURL(user.profileImageUrl.replace("_normal.","_400x400."));
             main.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -61,6 +66,19 @@ public class TwitterUserTask extends AsyncTask<Void,Void,Void>{
                 }
             });
         } catch (IOException e) {
+            Log.d("Bitmap", "Image in 400*400 not found");
+            try {
+                final Bitmap image = getBitmapFromURL(user.profileImageUrl);
+                main.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((ImageView) main.getView().findViewById(R.id.imageView)).setImageBitmap( image );
+                    }
+                });
+            } catch (IOException e1) {
+                Log.d("Bitmap", "URL is false");
+            }
+
         }
 
         main.getActivity().runOnUiThread(new Runnable() {
@@ -92,6 +110,7 @@ public class TwitterUserTask extends AsyncTask<Void,Void,Void>{
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
             return myBitmap;
         } catch (IOException e) {
+            Log.d("Bitmap", "Image not found");
             return null;
         }
     }
