@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Журнал</string>
+    <string name="title_activity_news">Новости</string>
+    <string name="download">Загрузка</string>
+    <string name="facebook">Фейсбук</string>
+    <string name="twitter">Твиттер</string>
+    <string name="prefCatNotifications">Оповещения</string>
+    <string name="prefNotificationsTitle">Включить оповещения</string>
+    <string name="actionSettings">Параметры</string>
+    <string name="drawerOpen">Drawer Open</string>
+    <string name="drawerClose">Drawer Close</string>
+    <string name="explore">Исследовать</string>
+    <string name="actionEditCategories">Редактирование категорий</string>
+    <string name="actionAddCategory">Добавить категорию</string>
+    <string name="addCategory">Добавить новую категорию</string>
+    <string name="addCategoryDialogMessage">Введите название для новой категории</string>
+    <string name="addNewsFeed">Добавить новую ленту новостей</string>
+    <string name="addNewsFeedLabelEditText">Название</string>
+    <string name="addNewsFeedLinkEditText">Ссылка</string>
+    <string name="add">Добавить</string>
+
+    <string name="facebook_app_id">185863238451126</string>
+    <string name="fb_share_photo">Фото</string>
+    <string name="fb_share_video">Видео</string>
+    <string name="fb_share_link">Ссылка</string>
+    <string name="fb_user_feed">Новости</string>
+    <string name="fb_user_likes_page">Лайки</string>
+    <string name="fb_user_info">О пользователе</string>
+    <string name="fb_page_feed">Новости</string>
+    <string name="fb_page_info">О странице</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
